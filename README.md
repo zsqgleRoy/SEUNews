@@ -1,6 +1,6 @@
 # SEUNews Website Project
 
-Vue3 TS Springboot 项目，东南新闻
+Vue3 TS Springboot 项目，东南新闻网
 
 ## 1.1使用教程
 
