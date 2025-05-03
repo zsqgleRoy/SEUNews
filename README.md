@@ -10,7 +10,7 @@ Vue3 TS Springboot 项目，东南新闻
 
 ###### 浏览器访问`https://git-scm.com/`
 
-![](.\images\2025-05-03-09-21-19-image.png)
+![](https://github.com/zsqgleRoy/SEUNews/blob/main/images\2025-05-03-09-21-19-image.png)
 
 ![](.\images\2025-05-03-09-27-24-image.png)
 
