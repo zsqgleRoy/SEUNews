@@ -1,0 +1,42 @@
+// 清除浮动混合
+@mixin clearfix {
+    &::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+  
+  // 弹性布局混合
+  @mixin flexbox($direction: row, $justify: flex-start, $align: stretch) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+  }
+  
+  // 媒体查询混合
+  @mixin media-query($breakpoint) {
+    @media (min-width: $breakpoint) {
+      @content;
+    }
+  }
+  
+  // 按钮样式混合
+  @mixin button-style($background-color, $text-color) {
+    display: inline-block;
+    padding: $small-padding $base-padding;
+    border: none;
+    border-radius: $base-border-radius;
+    background-color: $background-color;
+    color: $text-color;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  
+    &:hover {
+      background-color: darken($background-color, 10%);
+    }
+  }
+  

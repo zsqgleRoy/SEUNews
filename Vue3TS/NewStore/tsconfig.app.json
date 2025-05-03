@@ -1,0 +1,23 @@
+// tsconfig.app.json
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@wangeditor/editor-for-vue": [
+        "./node_modules/@wangeditor/editor-for-vue/dist/src/index.d.ts"
+      ],
+      "@wangeditor/editor/dist/css/style.css": [
+        "./node_modules/@wangeditor/editor/dist/css/style.css"
+      ],
+      "vue-cropper": ["./node_modules/vue-cropper/lib/index.ts"]
+    },
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true // 关键新增
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue",
+    "src/types/wangeditor.d.ts"]
+}

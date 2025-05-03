@@ -1,0 +1,395 @@
+body {
+    font-family: "宋体", SimSun, Songti SC, STSong, sans-serif;
+}
+
+body, button, input, select, textarea {
+    font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;
+    font-style: normal;
+    font-variant-caps: normal;
+    font-weight: 300;
+    font-stretch: normal;
+    font-size: 1em;
+    line-height: 1.8;
+    font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;
+    font-size-adjust: none;
+    font-kerning: auto;
+    font-optical-sizing: auto;
+    font-variant-alternates: normal;
+    font-variant-east-asian: normal;
+    font-variant-emoji: auto;
+    font-variant-ligatures: normal;
+    font-variant-numeric: normal;
+    font-variant-position: normal;
+    font-language-override: normal;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+}
+
+.html {
+    color: #B90008;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizelegibility;
+}
+
+.search-input:focus {
+    outline:none;
+}
+
+#tt {
+    background-color: #B90008;
+    height: 200px;
+    background-position-x: center;
+    background-position-y: top;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-image: url("//www.cnr.cn/2024/images/content/banner.png");
+    background-size: auto;
+    background-origin: padding-box;
+    background-clip: border-box;
+}
+
+.row {
+    position: relative;
+    width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    top:0px;
+    left: 0px;
+}
+
+#Text1 {
+    width:180px;
+}
+
+#bac {
+    height: 45px;
+    background-color: #B90008;
+}
+
+#mid {
+    height:50px;
+    margin-top:10px;
+    margin-left:15px;
+    margin-bottom:10px
+}
+    #mid input {
+        margin-left:0px;
+        height: 36px;
+        margin-top: 0px;
+    width: 186px;
+}
+
+#nav {
+    background-color: #B90008;
+    height: 45px;
+    font-size: 20px;
+    color: white;
+    padding-top: 0px;
+    padding-left: 10px;
+}
+    #nav ul {
+        list-style:none;
+        margin:0;
+        float:left;
+        height:44px;
+        font-weight:900;
+        color:white
+    }
+        #nav ul li {
+            float:left;
+            width:80px;
+            text-align:center;
+            padding:0 10px;
+            display:block;
+            line-height:45px;
+            border-left:2px solid white;
+        }
+
+            #nav ul li a :link, #nav ul li a:visited {
+                font-weight:bold;
+                color:white;
+                text-decoration:none
+            }
+            #nav ul li a:hover {
+                color: white;
+            }
+
+
+.divider {
+    clear:both;
+    display:block;
+    height:1px;
+    font-size:1px;
+    line-height:1px;
+}
+
+#footer {
+    background-color: #B90008;
+    height: 200px;
+    color: white;
+    padding-top: 8px;
+}
+
+#footer0820 {
+    font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;
+    font-style: normal;
+    font-variant-caps: normal;
+    font-weight: 300;
+    font-stretch: normal;
+    font-size: 1em;
+    line-height: 1.8;
+    font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;
+    font-size-adjust: none;
+    font-kerning: auto;
+    font-optical-sizing: auto;
+    font-variant-alternates: normal;
+    font-variant-east-asian: normal;
+    font-variant-emoji: auto;
+    font-variant-ligatures: normal;
+    font-variant-numeric: normal;
+    font-variant-position: normal;
+    font-language-override: normal;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+}
+
+#footer0820 {
+    margin-top: 34px;
+    padding: 64px 0 38px;
+    padding-top: 64px;
+    padding-right: 0px;
+    padding-bottom: 38px;
+    padding-left: 0px;
+    width: 100%;
+    background-color: #B90008;
+}
+    #footer0820 #perny-footer {
+        position: relative;
+    }
+
+    #footer0820 .w1200 {
+        margin: 0 auto;
+        margin-top: 0px;
+        margin-right: auto;
+        margin-bottom: 0px;
+        margin-left: auto;
+        width: 1200px;
+    }
+    #footer0820 #perny-footer .link-4 ul {
+        padding-left: 26px;
+        margin-bottom: -14px;
+    }
+
+    #footer0820 #perny-footer .link-1 {
+        width: 11%;
+    }
+
+        #footer0820 #perny-footer .link-1 ul {
+            padding-left: 26px;
+        }
+
+    #footer0820 #perny-footer .link-3 .other {
+        padding-top: 18px;
+        padding-left: 26px;
+    }
+        #footer0820 #perny-footer .link-3 .other .gywm {
+            float: left;
+            margin-left: 8px;
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        #footer0820 #perny-footer .link-3 .other span {
+            float: right;
+            margin-right: 40px;
+        }
+
+    #footer0820 #perny-footer .link-1 ul li, #footer0820 #perny-footer .link-2 ul li, #footer0820 #perny-footer .link-3 ul li, #footer0820 #perny-footer .link-4 ul li {
+        font-size: 14px;
+        line-height: 2.2;
+        color: white;
+    }
+
+    #footer0820 #perny-footer .link-3 .other .cnr-logo {
+        width: 70px;
+        height: 22px;
+        float: left;
+        display: block;
+    }
+    #footer0820 #perny-footer .link-3 .other span img {
+        height: 26px;
+        width: auto;
+        display: block;
+    }
+
+    #footer0820 #perny-footer .link-3::before {
+        position: absolute;
+        left: 33%;
+        top: 0;
+        bottom: 0;
+        content: "";
+        height: 100%;
+        border-left: 1px solid #272727;
+        border-left-width: 1px;
+        border-left-style: solid;
+        border-left-color: #B90008;
+    }
+
+    #footer0820 #perny-footer .link-4 {
+        width: 22%;
+    }
+
+    #footer0820 #perny-footer .link-1 ul li a, #footer0820 #perny-footer .link-2 ul li a, #footer0820 #perny-footer .link-3 ul li a, #footer0820 #perny-footer .link-4 ul li a {
+        color: #f1f1f1;
+    }
+    #footer0820 #perny-footer .link-3 .other .gywm a {
+        color: #f1f1f1;
+    width: 63px;
+}
+
+    #footer0820 #perny-footer .link-3 .other span a {
+        display: block;
+        float: left;
+        margin-left: 8px;
+    }
+
+    #footer0820 #perny-footer .link-4 ul li {
+        width: 50%;
+        float: left;
+        margin-bottom: 22px;
+        height: 32px;
+    }
+
+    #footer0820 #perny-footer .link-4 ul li a {
+        display: block;
+    }
+
+    #footer0820 #perny-footer .link-1 ul li a, #footer0820 #perny-footer .link-2 ul li a, #footer0820 #perny-footer .link-3 ul li a, #footer0820 #perny-footer .link-4 ul li a {
+        color: #f1f1f1;
+    }
+    #footer0820 #perny-footer .link-3 .other {
+        padding-top: 18px;
+        padding-left: 26px;
+    }
+
+        #footer0820 #perny-footer .link-3 .other .cnr-logo {
+            width: 70px;
+            height: 22px;
+            float: left;
+            display: block;
+        }
+
+a:hover {
+    text-decoration: none;
+    color: #a01727;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: #000000;
+}
+
+ins, a {
+    text-decoration: none;
+}
+
+a {
+    color: #1abc9c;
+}
+    a:hover {
+        text-decoration: none;
+        color: #a01727;
+    }
+
+fieldset, img {
+    border: 0;
+}
+
+.clearfix {
+    zoom: 1;
+}
+    .clearfix::before, .clearfix::after {
+        content: "";
+        display: table;
+    }
+    .clearfix::before, .clearfix::after {
+        content: "";
+        display: table;
+    }
+
+    .clearfix::after {
+        clear: both;
+    }
+
+#footer0820 #perny-footer .link-4 ul li a span {
+    display: inline-block;
+    font-size: 12px;
+    line-height: 16px;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    vertical-align: top;
+}
+
+#footer0820 #perny-footer .link-1, #footer0820 #perny-footer .link-2, #footer0820 #perny-footer .link-3, #footer0820 #perny-footer .link-4 {
+    float: left;
+}
+
+#footer0820 #perny-footer .link-3 {
+    width: 45%;
+}
+
+
+#footer0820 #perny-footer .link-4 ul {
+    padding-left: 26px;
+    margin-bottom: -14px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+body, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, menu, nav, section {
+    margin: 0;
+    margin-bottom: 0px;
+    padding: 0;
+    padding-left: 0px;
+}
+
+#footer0820 #perny-footer .link-3 ul li.odd {
+    width: 57%;
+}
+
+#footer0820 #perny-footer .link-3 ul li {
+    font-size: 11px;
+    float: left;
+}
+
+#footer0820 #perny-footer .link-1 ul li, #footer0820 #perny-footer .link-2 ul li, #footer0820 #perny-footer .link-3 ul li, #footer0820 #perny-footer .link-4 ul li {
+    font-size: 14px;
+    line-height: 2.2;
+    color: white;
+}
+
+#footer0820 #perny-footer .link-3 ul li.even {
+    width: 43%;
+}
+
+#footer0820 #perny-footer .link-3 ul li {
+    font-size: 11px;
+    float: left;
+}
+
+
+
+body, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, menu, nav, section {
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+

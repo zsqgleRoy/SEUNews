@@ -1,0 +1,15 @@
+// tsconfig.node.json
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "include": ["vite.config.*", "src/types/wangeditor.d.ts"],
+  "compilerOptions": {
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@wangeditor/editor-for-vue": [
+        "./node_modules/@wangeditor/editor-for-vue/dist/src/index.d.ts"
+      ],
+      "vue-cropper": ["./node_modules/vue-cropper/lib/index.ts"]
+    },
+    "types": ["node", "vite/client"]
+  }
+}

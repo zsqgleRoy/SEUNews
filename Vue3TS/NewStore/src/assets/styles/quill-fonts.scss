@@ -1,0 +1,113 @@
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=SimSun]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=SimSun]::before {
+  content: "宋体";
+  font-family: "SimSun";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=SimHei]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=SimHei]::before {
+ content: "黑体";
+ font-family: "SimHei";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=Microsoft-YaHei]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=Microsoft-YaHei]::before {
+ content: "微软雅黑";
+ font-family: "Microsoft YaHei";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=KaiTi]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=KaiTi]::before {
+ content: "楷体";
+ font-family: "KaiTi";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=FangSong]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=FangSong]::before {
+ content: "仿宋";
+ font-family: "FangSong";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=Arial]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=Arial]::before {
+ content: "Arial";
+ font-family: "Arial";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=Times-New-Roman]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=Times-New-Roman]::before {
+ content: "Times New Roman";
+ font-family: "Times New Roman";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=sans-serif]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=sans-serif]::before {
+ content: "sans-serif";
+ font-family: "sans-serif";
+}
+ 
+.ql-font-SimSun {
+  font-family: "SimSun" !important;
+}
+.ql-font-SimHei {
+  font-family: "SimHei" !important;
+}
+.ql-font-Microsoft-YaHei {
+  font-family: "Microsoft YaHei" !important; // ✅ 保持实际名称
+}
+.ql-font-KaiTi {
+  font-family: "KaiTi" !important;
+}
+.ql-font-FangSong {
+  font-family: "FangSong" !important;
+}
+.ql-font-Arial {
+  font-family: "Arial" !important;
+}
+.ql-font-Times-New-Roman {
+  font-family: "Times New Roman" !important;
+}
+.ql-font-sans-serif {
+  font-family: "sans-serif" !important;
+}
+
+
+
+
+
+/* 文字大小 */
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='10px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='10px']::before {
+  content: '10px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='12px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='12px']::before {
+  content: '12px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='14px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='14px']::before {
+  content: '14px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='16px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='16px']::before {
+  content: '16px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='20px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='20px']::before {
+  content: '20px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='24px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='24px']::before {
+  content: '24px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value='36px']::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value='36px']::before {
+  content: '36px';
+}
+
+/* 字体 */
+@each $font in ('SimSun', '宋体'), ('SimHei', '黑体'), ('Microsoft-YaHei', '微软雅黑'), ('KaiTi', '楷体'), ('FangSong', '仿宋'), ('Arial', 'Arial'), ('Times-New-Roman', 'Times New Roman'), ('sans-serif', 'sans-serif') {
+  .ql-snow .ql-picker.ql-font .ql-picker-label[data-value='#{nth($font, 1)}']::before,
+  .ql-snow .ql-picker.ql-font .ql-picker-item[data-value='#{nth($font, 1)}']::before {
+    content: '#{nth($font, 2)}';
+    font-family: '#{nth($font, 2)}' !important;
+  }
+
+  .ql-font-#{nth($font, 1)} {
+    font-family: '#{nth($font, 2)}' !important;
+  }
+}
+    

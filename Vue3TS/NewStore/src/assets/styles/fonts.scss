@@ -1,0 +1,12 @@
+/* src/assets/styles/fonts.css */
+@font-face {
+  font-family: '楷体_GB2312';
+  src: url('../ttf/楷体_GB2312.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: '楷体_GB2312', serif !important;
+}
