@@ -10,9 +10,9 @@ Vue3 TS Springboot 项目，东南新闻
 
 ###### 浏览器访问`https://git-scm.com/`
 
-![](https://github.com/zsqgleRoy/SEUNews/blob/main/images\2025-05-03-09-21-19-image.png)
+![](images/2025-05-03-09-21-19-image.png)
 
-![](.\images\2025-05-03-09-27-24-image.png)
+![](images/2025-05-03-09-27-24-image.png)
 
 ###### 配置Git
 
@@ -40,21 +40,21 @@ ssh-keygen -t rsa -b 4096 -C "你在GitHub注册的邮箱"
 type %USERPROFILE%\.ssh\id_rsa.pub
 ```
 
-![](.\images\2025-05-03-10-00-35-image.png)
+![](images/2025-05-03-10-00-35-image.png)
 
 ###### GitHub中配置ssh密钥
 
-![](.\images\2025-05-03-09-51-12-image.png)
+![](images/2025-05-03-09-51-12-image.png)
 
-![](.\images\2025-05-03-10-02-45-image.png)
+![](images/2025-05-03-10-02-45-image.png)
 
 1.2克隆项目
 
-![](.\images\2025-05-03-09-05-23-image.png)
+![](images/2025-05-03-09-05-23-image.png)
 
 找到你地址熟悉的文件夹，在哪里打开终端
 
-![](.\images\2025-05-03-10-05-07-image.png)
+![](images/2025-05-03-10-05-07-image.png)
 
 输入
 
