@@ -53,8 +53,8 @@ const fetchNewsList = async (
     isLoading.value = true;
     error.value = '';
     console.log("aaaaaaaaaaaaaaaaaaaaaaa");
-    const cacheKey = newsCache.generateCacheKey({ page, pageSize, status });
-    const cachedData = newsCache.getCache(cacheKey);
+    const cacheKey = newsCache.generatePageKey({ page, pageSize, status });
+    const cachedData = newsCache.getPageCache(cacheKey);
     if (cachedData) {
         articles.value = cachedData;
         isLoading.value = false;

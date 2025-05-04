@@ -124,14 +124,15 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<ArticleFrontDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable) {
+    public Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable) {
         if (status == null) {
             return Page.empty();
         }
         Page<Article> articles = articleRepository.findByStatus(status, pageable);
         return articles.map(article -> {
             String url = mediaService.getHeadImageUrl(article.getArticleId());
-            return new ArticleFrontDTO(article, url);
+            UserDTO author = userService.getUserById(article.getAuthorId());
+            return new ArticleDTO(article, url, author);
         });
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article-favorites")
+@RequestMapping("/api/article-favorites")
 public class ArticleFavoriteController {
 
     @Autowired

@@ -106,11 +106,11 @@ public class ArticleController {
      * @return 分页的文章前端DTO列表
      */
     @GetMapping("/all")
-    public ResponseEntity<Page<ArticleFrontDTO>> listAllArticles(
+    public ResponseEntity<Page<ArticleDTO>> listAllArticles(
             @RequestParam Article.ArticleStatus status,
             Pageable pageable
     ) {
-        Page<ArticleFrontDTO> selectedArticles = articleService.selectAllArticles(status, pageable);
+        Page<ArticleDTO> selectedArticles = articleService.selectAllArticles(status, pageable);
         return ResponseEntity.ok(selectedArticles);
     }
 
@@ -122,13 +122,13 @@ public class ArticleController {
      * @return 文章列表
      */
     @GetMapping("/list")
-    public ResponseEntity<Page<ArticleFrontDTO>> getNewsList(
+    public ResponseEntity<Page<ArticleDTO>> getNewsList(
             @RequestParam int page,
             @RequestParam int pageSize,
             @RequestParam Article.ArticleStatus status
     ) {
         Pageable pageable = org.springframework.data.domain.PageRequest.of(page - 1, pageSize);
-        Page<ArticleFrontDTO> articles = articleService.selectAllArticles(status, pageable);
+        Page<ArticleDTO> articles = articleService.selectAllArticles(status, pageable);
         return ResponseEntity.ok(articles);
     }
 

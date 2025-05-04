@@ -8,7 +8,6 @@
     <Menu v-else-if="!is404" @menuItemClick="handleMenuItemClick" />
     <!-- 首页主图，仅在 Home 路由时显示 -->
     <MainImg v-if="isMain"></MainImg>
-
     <!-- 路由视图容器，在显示头部或 404 页面时显示 -->
     <div class="view" v-if="isShow || is404">
       <template v-if="isLoading">
@@ -21,9 +20,10 @@
       </router-view>
     </div>
     <el-backtop :right="40" :bottom="60" />
-    <Footer v-if="isShow && noFooter" />
+    <Footer v-if="isShow && noFooter" ></Footer>
     <Footer2 v-if="isShow && !noFooter" />
   </div>
+  <BottomNavbar v-if="!isDesktop && isShow" />
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +36,7 @@ import Menu from '@/views/user/Home/index.vue';
 import { useRoute, useRouter } from 'vue-router';
 import navbar from "./components/common/navbar.vue";
 import LoadingComponent from "@/components/common/LoadingComponent.vue";
+import BottomNavbar from "./components/foMobile/BottomNavbar.vue";
 
 const row = ref(0);
 // 定义不需要显示 Header 的路由名称

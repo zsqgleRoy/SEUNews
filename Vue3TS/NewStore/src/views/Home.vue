@@ -97,8 +97,8 @@
     isLoading.value = true;
     error.value = '';
 
-    const cacheKey = newsCache.generateCacheKey({ page, pageSize, status });
-    const cachedData = newsCache.getCache(cacheKey);
+    const cacheKey = newsCache.generatePageKey({ page, pageSize, status });
+    const cachedData = newsCache.getPageCache(cacheKey);
 
     if (cachedData) {
         sliderNewsList.value = cachedData.slice(0, 6);
@@ -109,7 +109,7 @@
 
     try {
         const response = await apiGetNewsList({ page, pageSize, status });
-        newsList.value = response?.data.content;
+        newsList.value = Array.isArray(response?.data.content) ? response?.data.content : [];
         sliderNewsList.value = response?.data.content.slice(0, 6);
         newsCache.saveCacheData(cacheKey, response?.data.content, 7200000);
     } catch (err: any) {

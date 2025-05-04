@@ -99,7 +99,7 @@ const routes: RouteRecordRaw[] = [
     name: "SearchResult",
     component:() => import('@/components/common/search/SearchPanel.vue'),
     meta: {
-      title: '智能客服',
+      title: '搜索结果',
       requiresAuth: false // 不需要认证
     }
   },
@@ -108,7 +108,7 @@ const routes: RouteRecordRaw[] = [
     name: "ModifyUserData",
     component:() => import('@/views/user/Home/EditUserData.vue'),
     meta: {
-      title: '智能客服',
+      title: '修改信息',
       requiresAuth: false // 不需要认证
     }
   },

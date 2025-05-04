@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/news-images/**","/static/news-videos/**", "/static/news-music/**")
-                .addResourceLocations("file:D:/uploads/NewsImg/", "file:D:/uploads/NewsMusic/");
+                .addResourceLocations("file:D:/uploads/NewsImg/", "file:D:/uploads/NewsVideo/", "file:D:/uploads/NewsMusic/");
     }
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

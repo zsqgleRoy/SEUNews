@@ -13,13 +13,15 @@
 
 <script setup lang="ts">
   import WaterMark from '@/components/common/watermark/WaterMarkBack.vue'
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
   import ChatMessageList from './components/ChatMessageList.vue'
   import ChatInput from './components/ChatInput.vue'
   import axios from 'axios'
   import { initialURL } from '@/lib/urls'
   import BackButton from '@/components/common/BackButton.vue';
   import userCache from '@/cache/userCache'
+  import { useRoute } from 'vue-router'
+  const route = useRoute()
   const generateSessionId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   };
@@ -101,7 +103,6 @@
         console.error('加载历史记录失败:', error);
     }
   };
-
 
   const handleSendMessage = async (content: string) => {
     // 加载占位消息

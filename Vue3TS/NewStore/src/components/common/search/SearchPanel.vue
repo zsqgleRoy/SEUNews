@@ -265,7 +265,6 @@
   onMounted(() => {
     const newQuery = route.params.query;
     keyword.value = newQuery as string;
-    handleSearch()
   });
 </script>
   

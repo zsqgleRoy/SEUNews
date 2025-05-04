@@ -25,7 +25,7 @@
 .footer {
   background: linear-gradient(135deg, #004ecc, #6b00bc);
   color: #fff;
-  padding: 30px 20px;
+  padding: 30px 20px 80px 20px;
   font-family: sans-serif;
 }
 

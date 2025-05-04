@@ -86,8 +86,9 @@
           class="article-content ql-editor" 
           :style="{ fontSize: fontSize + 'px' }"
           v-html="article.content"
-        />
-        <NewsInteractionBar/>
+        ></section>
+        <!-- 互动区域 -->
+        <NewsInteractionBar :article_id="id || 0"/>
       </article>
     </template>
   </div>
@@ -101,13 +102,14 @@ import { getNewsById } from '@/api/news';
 import LoadingComponent from "@/components/common/LoadingComponent.vue";
 import NewsInteractionBar from "@/components/News/NewsInteractionBar.vue";
 import type { UserInfo } from '@/cache/userCache';
+import newsCache from '@/cache/newsCache';
 
 const router = useRouter();
 const route = useRoute();
 
 // 类型定义
 interface Article {
-  articleId: number;
+  article_id: number;
   title: string;
   content: string;
   author: string;
@@ -124,6 +126,7 @@ const errorMessage = ref('');
 const errorDescription = ref('');
 const fontSize = ref(20);
 const userInfo = ref<UserInfo | null>(null);
+const id = ref<number | null>(0);
 
 // 计算属性
 const isUpdated = computed(() => {
@@ -151,6 +154,7 @@ const fetchNews = async () => {
     isLoading.value = true;
     errorMessage.value = '';
     errorDescription.value = '';
+    
     const response = await getNewsById(
       Number(route.params.id)
     );
@@ -170,17 +174,23 @@ const fetchNews = async () => {
 
 onMounted(async () => {
   window.scrollTo(0, 0);
-  await fetchNews();
 });
 onUnmounted(() => {
-  // 其他清理：如移除自定义事件监听、销毁第三方实例等
-  console.log('新闻详情页已卸载，资源清理完成');
 });
 watch(
   () => route.params.id,
-  (newId) => {
-    if (newId) {
-      fetchNews();
+  (article_id) => {
+    if (article_id) {
+      id.value = Number(article_id);
+      const cacheKey = newsCache.generateNewsIdKey(Number(article_id));
+      const cachedData = newsCache.getNewsCache(cacheKey);
+      if (cachedData) {
+        article.value = cachedData;        
+        userInfo.value = cachedData;
+        isLoading.value = false;
+      } else {
+        fetchNews();
+      }
     }
   },
   { immediate: true }

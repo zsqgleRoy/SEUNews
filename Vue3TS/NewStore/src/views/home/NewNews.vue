@@ -9,7 +9,7 @@
         <!-- 新闻列表 -->
         <div v-else class="news-list">
             <div class="news-item" v-for="(item, index) in newsList" :key="index">
-                <router-link :to="`/news/${item.id}`" class="news-link">
+                <router-link :to="`/news/${item.article_id}`" class="news-link">
                     <h3 class="news-title">{{ item.title }}</h3>
                     <div class="news-meta">
                         <p>{{ formatDate(item.publishDate) }}</p>
@@ -42,8 +42,8 @@ const fetchNewsList = async (
     isLoading.value = true;
     error.value = '';
 
-    const cacheKey = newsCache.generateCacheKey({ page, pageSize, status });
-    const cachedData = newsCache.getCache(cacheKey);
+    const cacheKey = newsCache.generatePageKey({ page, pageSize, status });
+    const cachedData = newsCache.getPageCache(cacheKey);
 
     if (cachedData) {
         newsList.value = cachedData;

@@ -33,7 +33,6 @@ const handleKeyPress = (e: KeyboardEvent) => {
 const showContent = () => {
     const searchEvent = new CustomEvent('search', { detail: searchQuery.value });
     document.dispatchEvent(searchEvent);
-    console.log(searchQuery.value);
     router.push(`/searchresult/${searchQuery.value}` );
     toggleSearch();
 };

@@ -35,6 +35,18 @@ public class Article {
     @Column(name = "author_id")
     private Integer authorId;
 
+    @Column(name = "like_num")
+    private long likeNum;
+
+    @Column(name = "coin_num")
+    private long coinNum;
+
+    @Column(name = "favorit_num")
+    private long favoritNum;
+
+    @Column(name = "share_num")
+    private long shareNum;
+
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
 

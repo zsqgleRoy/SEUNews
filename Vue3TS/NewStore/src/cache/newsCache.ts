@@ -1,5 +1,5 @@
 // src/cache/newsCache.ts
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 interface CacheItem {
   data: any;
@@ -34,13 +34,18 @@ const saveCache = () => {
   }
 };
 
-// 生成缓存键
-const generateCacheKey = (params: {
+// 生成分页缓存键
+const generatePageKey = (params: {
   page: number;
   pageSize: number;
   status: string;
 }) => {
-  return `${params.page}-${params.pageSize}-${params.status}`;
+  return `p_${params.page}_${params.pageSize}_${params.status}`;
+};
+
+// 生成新闻ID缓存键
+const generateNewsIdKey = (id: string | number) => {
+  return `n_${id}`;
 };
 
 // 检查缓存是否有效
@@ -48,22 +53,47 @@ const isCacheValid = (cacheItem: CacheItem) => {
   return Date.now() < cacheItem.timestamp + cacheItem.expires;
 };
 
-// 获取缓存数据
-const getCache = (cacheKey: string) => {
-  const cacheItem = newsCacheStorage.value[cacheKey];
-  if (!cacheItem) {
-    return null;
-  }
+// 获取分页缓存数据
+const getPageCache = (pageKey: string) => {
+  const cacheItem = newsCacheStorage.value[pageKey];
+  if (!cacheItem) return null;
   return isCacheValid(cacheItem) ? cacheItem.data : null;
 };
 
-// 保存缓存数据
-const saveCacheData = (cacheKey: string, data: any, expires = 3600000) => { // 默认1小时有效期
-  newsCacheStorage.value[cacheKey] = {
+// 获取新闻条目缓存数据
+const getNewsCache = (idKey: string) => {
+  const cacheItem = newsCacheStorage.value[idKey];
+  if (!cacheItem) return null;
+  return isCacheValid(cacheItem) ? cacheItem.data : null;
+};
+
+// 保存缓存数据（同时处理分页数据和新闻条目）
+const saveCacheData = (
+  pageKey: string,
+  data: any,
+  expires = 3600000
+) => {
+  // 保存分页数据
+  newsCacheStorage.value[pageKey] = {
     data,
     timestamp: Date.now(),
     expires
   };
+
+  // 提取并保存新闻条目（假设data为新闻数组）
+  if (data && Array.isArray(data)) {
+    data.forEach((newsItem: any) => {
+      if (newsItem.article_id) {
+        const idKey = generateNewsIdKey(newsItem.article_id);
+        newsCacheStorage.value[idKey] = {
+          data: newsItem,
+          timestamp: Date.now(),
+          expires
+        };
+      }
+    });
+  }
+
   saveCache();
 };
 
@@ -85,10 +115,12 @@ const clearAllCache = () => {
 loadCache();
 
 export default {
-  getCache,
+  getPageCache,
+  getNewsCache,
   saveCacheData,
   deleteCache,
   clearAllCache,
-  generateCacheKey,
+  generatePageKey,
+  generateNewsIdKey,
   cacheStorageKey
 };

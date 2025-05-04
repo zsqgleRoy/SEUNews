@@ -3,7 +3,7 @@
       <h2 class="section-title">头条新闻</h2>
       <div class="news-list">
         <div class="news-item" v-for="(item, index) in sliderNewsList" :key="index">
-          <router-link :to="`/news/${item.id}`" class="news-link">
+          <router-link :to="`/news/${item.article_id}`" class="news-link">
             <div class="news-image-container">
               <img :src="item.headImageUrl" alt="新闻图片" class="news-image">
             </div>
@@ -19,9 +19,9 @@
   
 <script lang="ts" setup>
   import { formatDate } from '@/utils/format';
-import { onUnmounted } from 'vue';
+  import { onUnmounted } from 'vue';
   interface NewsItem {
-    id: string;
+    article_id: string;
     headImageUrl: string;
     title: string;
     publishDate: string;

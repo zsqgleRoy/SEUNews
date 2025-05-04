@@ -23,6 +23,10 @@ public class ArticleDTO {
     private String headImageUrl;
     private List<MediaDTO> medias;
     private String avatar;
+    private long likes;
+    private long coin;
+    private long favourite;
+    private long share;
 
     public ArticleDTO() {}
 
@@ -56,6 +60,10 @@ public class ArticleDTO {
         this.headImageUrl = url;
         this.author = author.getUsername();
         this.avatar = author.getAvatar();
+        this.likes = article.getLikeNum();
+        this.coin = article.getCoinNum();
+        this.favourite = article.getFavoritNum();
+        this.share = article.getShareNum();
     }
 
 }

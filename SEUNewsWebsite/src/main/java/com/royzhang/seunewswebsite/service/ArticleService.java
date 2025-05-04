@@ -61,7 +61,7 @@ public interface ArticleService {
      * @param pageable 分页信息
      * @return 分页的文章前端 DTO 列表
      */
-    Page<ArticleFrontDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable);
+    Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable);
 
     /**
      * 保存文章信息。

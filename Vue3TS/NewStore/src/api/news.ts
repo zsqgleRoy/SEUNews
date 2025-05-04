@@ -33,6 +33,7 @@ export enum ArticleStatus {
 // 定义新闻列表响应数据类型
 export interface NewsListResponse {
     data: {
+            article_id: number;
             title: string;
             publishDate: string;
             updateDate: string;
@@ -42,6 +43,10 @@ export interface NewsListResponse {
             tag: number;
             headImageUrl: string;
             avatar?: string;
+            likes?: number;
+            coin?: number;
+            favourite?: number;
+            share?: number;
         total: number;
     };
 }
