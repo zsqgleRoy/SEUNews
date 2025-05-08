@@ -4,6 +4,7 @@ import { initialURL } from '@/lib/urls';
 // import type { ArticleCoinDTO } from '@/types/article';
 import userCache from '@/cache/userCache';
 import newsCache from '@/cache/newsCache';
+import type { ArticleCoinDTO } from '@/types/article';
 
 const api = axios.create({
   baseURL: initialURL.SERVER_URL,
@@ -48,11 +49,28 @@ export const useArticleCoinService = () => {
     }
   };
 
+  // 检查用户是否收藏
+  const isArticleCoinedByUser = async (
+    articleId: number
+  ): Promise<boolean> => {
+    try {
+      const userId = userCache.getUserCache()?.user_id;
+      if (!userId) return false;
+      const response = await api.get<boolean>(
+        `/api/article-coins/user/${userId}/article/${articleId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('检查投币状态失败:', error);
+      return false;
+    }
+  };
+
   // 创建投币记录
   const createCoin = async (dto: Omit<ArticleCoinDTO, 'coinId'>): Promise<ArticleCoinDTO | null> => {
     try {
       const response = await api.post<ApiResponse<ArticleCoinDTO>>(
-        '/article-coins',
+        '/api/article-coins',
         dto
       );
       return response.data.data;
@@ -77,7 +95,7 @@ export const useArticleCoinService = () => {
   const getTotalCoinsCache = new Map<number, number>();
   const getTotalCoinsForArticle = async (articleId: number): Promise<number> => {
     const key = newsCache.generateNewsIdKey(articleId);
-    return newsCache.getNewsCache(key).coin;
+    return newsCache.getNewsCache(key)?.coin || 0;
   };
 
   // 快捷方法：用户今日剩余投币数
@@ -112,8 +130,8 @@ export const useArticleCoinService = () => {
       const result = await createCoin({
           userId: user.user_id,
           articleId,
-          coinAmount: coins,
-          createdAt: ''
+          coinCount: coins,
+          coinDate: ''
       });
 
       // 更新缓存
@@ -131,6 +149,7 @@ export const useArticleCoinService = () => {
 
   return {
     getAllCoinsByArticleId,
+    isArticleCoinedByUser,
     getCoinById,
     createCoin,
     deleteCoin,
@@ -141,13 +160,7 @@ export const useArticleCoinService = () => {
 };
 
 // 类型定义扩展 (src/types/article.d.ts)
-export interface ArticleCoinDTO {
-  coinId: number;
-  userId: number;
-  articleId: number;
-  coinAmount: number;
-  createdAt: string;
-}
+
 
 interface ApiResponse<T> {
   data: T;

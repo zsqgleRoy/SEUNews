@@ -8,6 +8,11 @@ export interface UserInfo {
   avatar: string;
   isAuthor: string;
   expires: number;
+  name?: string;
+  phone?:number;
+  birthday?: Date;
+  password?: string;
+  authorId?: number;
 }
 
 const USER_KEY = 'user_info';

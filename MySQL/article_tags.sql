@@ -1,0 +1,13 @@
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (1, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (4, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (23, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (24, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (25, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (26, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (27, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (30, 1);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (22, 4);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (31, 6);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (32, 6);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (33, 6);
+INSERT INTO `article_tags`(`article_id`, `tag_id`) VALUES (34, 6);

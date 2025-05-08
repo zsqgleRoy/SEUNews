@@ -1,10 +1,14 @@
 package com.royzhang.seunewswebsite.dto.Article;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
+@Getter
+@Setter
 public class ArticleFavoriteDTO {
-    private Integer favorite_id;
     private Integer userId;
     private Integer articleId;
     private Date favoriteDate;

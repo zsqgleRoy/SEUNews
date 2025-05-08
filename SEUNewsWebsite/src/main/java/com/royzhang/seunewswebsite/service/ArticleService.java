@@ -58,10 +58,11 @@ public interface ArticleService {
      * 根据文章状态进行分页查询文章列表。
      *
      * @param status   文章状态
+     * @param isDelete
      * @param pageable 分页信息
      * @return 分页的文章前端 DTO 列表
      */
-    Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable);
+    Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Integer isDelete, Pageable pageable);
 
     /**
      * 保存文章信息。
@@ -72,4 +73,12 @@ public interface ArticleService {
     boolean saveArticle(ArticleInsertDTO articleInsertDTO);
 
     Page<ArticleDTO> selectArticlesByTitle(String title, Article.ArticleStatus status, Pageable pageable);
+
+    boolean createArticleShare(Integer articleId);
+
+    List<ArticleFrontDTO> getArticleByAuthorId(Integer authorid);
+
+    void deleteArticlesByIds(List<Integer> ids);
+
+    Page<ArticleDTO> selectDeletedArticles(int isDelete, Pageable pageable);
 }

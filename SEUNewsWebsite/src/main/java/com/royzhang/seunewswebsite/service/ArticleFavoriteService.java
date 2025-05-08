@@ -8,14 +8,11 @@ public interface ArticleFavoriteService {
     // 获取用户的所有文章收藏记录
     List<ArticleFavoriteDTO> getAllFavoritesByUserId(Integer userId);
 
-    // 根据收藏 ID 获取文章收藏记录
-    ArticleFavoriteDTO getFavoriteById(Integer favoriteId);
-
     // 创建文章收藏记录
     ArticleFavoriteDTO createFavorite(ArticleFavoriteDTO favoriteDTO);
 
     // 删除文章收藏记录
-    void deleteFavorite(Integer favoriteId);
+    void deleteFavorite(Integer userId, Integer articleId);
 
     // 检查用户是否已收藏某篇文章
     boolean isArticleFavoritedByUser(Integer userId, Integer articleId);

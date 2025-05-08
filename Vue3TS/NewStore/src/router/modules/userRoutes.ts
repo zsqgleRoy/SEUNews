@@ -23,7 +23,17 @@ const userRoutes: RouteRecordRaw[] = [
     }
   },  
   {
-    path:"/userdata:id",
+    path:"/userInfo/:id",
+    name:"PersonInfo",
+    component:()=>import("@/views/user/Home/PersonInfo.vue"),
+    meta:{
+      title:"作者主页",
+      requiresAuth: false,
+      mobileFullPage: true
+    }
+  },  
+  {
+    path:"/userdata/:id",
     name:"userdata",
     component:()=>import("@/views/user/Home/PublicHome.vue"),
     meta:{

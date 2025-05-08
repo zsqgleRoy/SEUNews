@@ -6,6 +6,7 @@ import com.royzhang.seunewswebsite.repository.ArticleLikeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +30,6 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
     }
 
     @Override
-    public ArticleLikeDTO getLikeById(Integer likeId) {
-        Optional<ArticleLike> likeOptional = articleLikeRepository.findById(likeId);
-        return likeOptional.map(like -> modelMapper.map(like, ArticleLikeDTO.class)).orElse(null);
-    }
-
-    @Override
     public ArticleLikeDTO createLike(ArticleLikeDTO likeDTO) {
         ArticleLike like = modelMapper.map(likeDTO, ArticleLike.class);
         ArticleLike savedLike = articleLikeRepository.save(like);
@@ -42,8 +37,9 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
     }
 
     @Override
-    public void deleteLike(Integer likeId) {
-        articleLikeRepository.deleteById(likeId);
+    @Transactional
+    public void deleteLike(Integer userId, Integer articleId) {
+        articleLikeRepository.deleteByUserIdAndArticleId(userId, articleId);
     }
 
     @Override

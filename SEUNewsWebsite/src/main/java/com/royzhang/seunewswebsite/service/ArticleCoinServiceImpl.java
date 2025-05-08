@@ -6,6 +6,7 @@ import com.royzhang.seunewswebsite.repository.ArticleCoinRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +36,12 @@ public class ArticleCoinServiceImpl implements ArticleCoinService {
     }
 
     @Override
+    @Transactional
     public ArticleCoinDTO createCoin(ArticleCoinDTO coinDTO) {
-        ArticleCoin coin = modelMapper.map(coinDTO, ArticleCoin.class);
-        ArticleCoin savedCoin = articleCoinRepository.save(coin);
-        return modelMapper.map(savedCoin, ArticleCoinDTO.class);
+        Integer num = articleCoinRepository.saveCoins(
+                coinDTO.getUserId(), coinDTO.getArticleId(), coinDTO.getCoinCount(), coinDTO.getCoinDate());
+        if (num == null || num <= 0) return null;
+        return coinDTO;
     }
 
     @Override
@@ -50,5 +53,10 @@ public class ArticleCoinServiceImpl implements ArticleCoinService {
     public Integer getTotalCoinsForArticle(Integer articleId) {
         List<ArticleCoin> coins = articleCoinRepository.findByArticleId(articleId);
         return coins.stream().mapToInt(ArticleCoin::getCoinCount).sum();
+    }
+
+    @Override
+    public boolean isArticleCoinedByUser(Integer userId, Integer articleId){
+        return articleCoinRepository.existsByUserIdAndArticleId(userId, articleId);
     }
 }

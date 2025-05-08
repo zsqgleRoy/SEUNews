@@ -5,6 +5,9 @@ export interface UserInfo {
     registerDate: string;
     avatar:string;
     isAuthor:string;
+    birth?:Data;
+    phone?:string;
+    name?:string;
   }
   
   // 用户登录请求参数类型

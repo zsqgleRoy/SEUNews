@@ -22,6 +22,7 @@ export interface UpdateData {
     status: ArticleStatus;
     tag: number;
     headImageUrl: string;
+    authorId?:number;
 }
 
 // 定义文章状态枚举
@@ -33,20 +34,21 @@ export enum ArticleStatus {
 // 定义新闻列表响应数据类型
 export interface NewsListResponse {
     data: {
-            article_id: number;
-            title: string;
-            publishDate: string;
-            updateDate: string;
-            content: string;
-            author: string;
-            status: string;
-            tag: number;
-            headImageUrl: string;
-            avatar?: string;
-            likes?: number;
-            coin?: number;
-            favourite?: number;
-            share?: number;
+        article_id: number;
+        title: string;
+        publishDate: string;
+        updateDate: string;
+        content: string;
+        author: string;
+        status: string;
+        tag: number;
+        headImageUrl: string;
+        avatar?: string;
+        likes?: number;
+        coin?: number;
+        favourite?: number;
+        share?: number;
+        authorId?: string;
         total: number;
     };
 }
@@ -73,6 +75,7 @@ export interface NewsDetailResponse {
         status: string;
         tag: number;
         headImageUrl: string;
+        authorId?: number;
     };
 }
 
@@ -98,7 +101,7 @@ const makeRequest = async <T>(
         } else if (method === 'put') {
             response = await request.put<T>(url, data);
         } else if (method === 'delete') {
-            response = await request.delete<T>(url, { params });
+            response = await request.delete<T>(url, {data});
         }
         return response;
     } catch (error) {
@@ -109,6 +112,10 @@ const makeRequest = async <T>(
 // 获取新闻列表接口
 export const getNewsList = (params: { page: number; pageSize: number; status: ArticleStatus }) => {
     return makeRequest<NewsListResponse>('get', '/api/articles/list', params);
+};
+
+export const getDeletedNewsList = (params: { page: number; pageSize: number; }) => {
+    return makeRequest<NewsListResponse>('get', '/api/articles/deletedList', params);
 };
 
 export const getNewsListBySearch = (
@@ -150,6 +157,6 @@ export const apiUpdateNews = (data: UpdateData) => {
 
 // 删除新闻接口
 export const deleteNewsByIds = (ids: number[]) => {
-    return makeRequest<{ status: number; message: string }>('delete', '/api/articles', { params: { ids } });
+    return makeRequest<{ status: number; message: string }>('delete', '/api/articles', undefined, ids );
 };
     

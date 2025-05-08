@@ -22,24 +22,15 @@ public class ArticleFavoriteController {
         return new ResponseEntity<>(favorites, HttpStatus.OK);
     }
 
-    @GetMapping("/{favoriteId}")
-    public ResponseEntity<ArticleFavoriteDTO> getFavoriteById(@PathVariable Integer favoriteId) {
-        ArticleFavoriteDTO favorite = articleFavoriteService.getFavoriteById(favoriteId);
-        if (favorite != null) {
-            return new ResponseEntity<>(favorite, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
     @PostMapping
     public ResponseEntity<ArticleFavoriteDTO> createFavorite(@RequestBody ArticleFavoriteDTO favoriteDTO) {
         ArticleFavoriteDTO createdFavorite = articleFavoriteService.createFavorite(favoriteDTO);
         return new ResponseEntity<>(createdFavorite, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Integer favoriteId) {
-        articleFavoriteService.deleteFavorite(favoriteId);
+    @DeleteMapping("/user/{userId}/article/{articleId}")
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Integer userId, @PathVariable Integer articleId) {
+        articleFavoriteService.deleteFavorite(userId, articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

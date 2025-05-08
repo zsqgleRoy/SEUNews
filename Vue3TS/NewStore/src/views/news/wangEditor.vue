@@ -17,12 +17,13 @@
           />
         </div>
         <div class="form-item">
-          <input
-            type="datetime-local"
-            v-model="newsTime"
-            step="1"
-            class="news-time-input"
-          />
+            <el-date-picker
+              v-model="newsTime"
+              type="datetime"
+              format="YYYY/MM/DD HH:mm:ss"
+              placeholder="选择时间"
+              class="news-time-input"
+            />
         </div>
         <div class="form-item">
           <div class="select-group">
@@ -160,6 +161,21 @@ export default {
                 onError(file: File, err: any, res: any) {
                   ElMessage.error('上传错误:'+ err + res);
                 }
+            },
+              fontFamily: {
+                fontFamilyList: [
+                  { name: '仿宋_GB2312', value: '楷体_GB2312' },
+                  { name: '宋体', value: 'SimSun' },
+                  '黑体',
+                  '楷体',
+                  'Arial',
+                  'Tahoma',
+                  'Verdana',
+                ],
+                showCustom: true
+            },
+            style: {
+              fontFamily: '楷体_GB2312'
             }
         }
     }
@@ -255,6 +271,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  @font-face {
+    font-family: '楷体_GB2312';
+    src: url('@/assets/ttf/楷体_GB2312.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-family: '楷体_GB2312';
+  }
 /* 整体容器样式 */
 .editor-container {
   max-width: 100vw;

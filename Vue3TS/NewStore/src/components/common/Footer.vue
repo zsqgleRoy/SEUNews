@@ -51,7 +51,7 @@
                   <li>新闻热线：400 - 000 - 0000（虚拟）</li>
                   <li><a href="https://www.piyao.org.cn" target="_blank">中国互联网联合辟谣平台</a></li>
                   <li>互联网新闻信息服务许可证 10120210001</li>
-                  <li>电子邮箱：zsqgle@cxxy.seu.edu.com</li>
+                  <li>电子邮箱：zsqgle@seu.edu.com</li>
                   <li>
                       <a href="https://beian.miit.gov.cn" target="_blank">京ICP备2021013708号</a>
                       <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010602007741" target="_blank">京公网安备11010602007741</a>
@@ -343,7 +343,7 @@
 /* 小屏幕适配 */
 @media (max-width: 768px) {
   .horizontal-line {
-      margin: 999px 0 0 0;
+      margin: 999px 0 30px 0;
   }
 
   .horizontal-line::before,

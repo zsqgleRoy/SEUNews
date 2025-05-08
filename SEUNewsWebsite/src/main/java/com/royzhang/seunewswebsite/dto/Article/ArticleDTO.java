@@ -38,26 +38,21 @@ public class ArticleDTO {
         this.publishDate = article.getPublishDate();
         this.updateDate = article.getUpdateDate();
         this.status = article.getStatus();
+        this.headImageUrl = article.getHeadImageUrl();
+        this.likes = article.getLikeNum();
+        this.coin = article.getCoinNum();
+        this.favourite = article.getFavoritNum();
+        this.share = article.getShareNum();
     }
-    public ArticleDTO(Article article, String url) {
+    public ArticleDTO(Article article, UserDTO author) {
         this.article_id = article.getArticleId();
         this.authorId = article.getAuthorId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.publishDate = article.getPublishDate();
         this.updateDate = article.getUpdateDate();
+        this.headImageUrl = article.getHeadImageUrl();
         this.status = article.getStatus();
-        this.headImageUrl = url;
-    }
-    public ArticleDTO(Article article, String url, UserDTO author) {
-        this.article_id = article.getArticleId();
-        this.authorId = article.getAuthorId();
-        this.title = article.getTitle();
-        this.content = article.getContent();
-        this.publishDate = article.getPublishDate();
-        this.updateDate = article.getUpdateDate();
-        this.status = article.getStatus();
-        this.headImageUrl = url;
         this.author = author.getUsername();
         this.avatar = author.getAvatar();
         this.likes = article.getLikeNum();

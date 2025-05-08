@@ -17,6 +17,7 @@ public class ArticleUpdateDTO {
     private ArticleStatus status;
     private Integer tag;
     private String headImageUrl;
+    private Integer authorId;
 
     public ArticleUpdateDTO() {}
 
@@ -25,6 +26,7 @@ public class ArticleUpdateDTO {
         this.content = article.getContent();
         this.updateDate = article.getUpdateDate();
         this.status = article.getStatus();
+        this.authorId = article.getAuthorId();
     }
 
 }

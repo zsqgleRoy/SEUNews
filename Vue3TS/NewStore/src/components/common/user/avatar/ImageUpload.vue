@@ -32,7 +32,7 @@
         >
           <el-button link
             ><el-icon color="#fff" size="20" @click.stop="onPreview"><ZoomIn /></el-icon
-          ></el-button>
+          ></el-button> 
           <el-button link
             ><el-icon color="#fff" size="20" @click.stop="handleRemove"><Delete /></el-icon
           ></el-button>
@@ -45,6 +45,7 @@
       :info="false"
       :width="props.width"
       :height="props.height"
+      :myUrl="props.url"
       @imgData="getImageData"
     />
  
@@ -55,14 +56,37 @@
       :z-index="9999"
       :initial-index="initialIndex"
       :hide-on-click-modal="true"
-    />
+    >
+    <template
+        #toolbar="{ actions, reset, activeIndex }"
+      >
+        <!-- <el-icon @click="prev"><Back /></el-icon>
+        <el-icon @click="next"><Right /></el-icon>
+        <el-icon @click="setActiveItem(srcList.length - 1)">
+          <DArrowRight />
+        </el-icon> -->
+        <el-icon @click="actions('zoomOut')"><ZoomOut /></el-icon>
+        <el-icon
+          @click="actions('zoomIn', { enableTransition: false, zoomRate: 2 })"
+        >
+          <ZoomIn />
+        </el-icon>
+        <el-icon
+          @click="actions('clockwise')">
+          <RefreshRight />
+        </el-icon>
+        <el-icon @click="actions('anticlockwise')"><RefreshLeft /></el-icon>
+        <el-icon @click="reset"><Refresh /></el-icon>
+        <el-icon @click="download(activeIndex)"><Download /></el-icon>
+      </template>
+    </el-image-viewer>
   </div>
   </el-card>
 </template>
  
-<script setup>
+<script setup lang="ts">
 import ImageCropper from '@/components/common/user/avatar/ImageCropper.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 const props = defineProps({
   title: {
     type: String,
@@ -76,13 +100,16 @@ const props = defineProps({
     type: Number,
     default: 400
   },
+  url: {
+    type: String
+  }
 })
 const emit = defineEmits(['imgData'])
  
 const imageCropperVisible = ref(false)  // 截图组件显示隐藏
 const imageData = ref({})               // 图片数据
 // 获取图片数据
-const getImageData = (data) => {
+const getImageData = (data:{ url: string }) => {
   imageData.value = data
   emit('imgData', imageData.value)
 }
@@ -113,6 +140,32 @@ const handleRemove = () => {
   imageViewList.value = []
   imageData.value = {}
 }
+
+const download = (index: number) => {
+  const url = imageViewList.value[index]
+  const suffix = url.slice(url.lastIndexOf('.'))
+  const filename = Date.now() + suffix
+
+  fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const blobUrl = URL.createObjectURL(new Blob([blob]))
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      URL.revokeObjectURL(blobUrl)
+      link.remove()
+    })
+}
+
+onMounted(()=>{
+  if(props.url){
+    imageData.value.showOverlay = false;
+    imageData.value.url = props.url;
+  }
+})
 </script>
  
 <style lang="scss" scoped>

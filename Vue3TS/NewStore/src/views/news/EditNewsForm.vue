@@ -16,10 +16,12 @@
             />
           </div>
           <div class="form-item">
-            <input
-              type="datetime-local"
+            <el-date-picker
               v-model="newsTime"
-              step="1"
+              type="datetime"
+              placeholder="选择时间"
+              value-format="YYYY-MM-DD hh:mm:ss"
+              :default-time="newsTime"
               class="news-time-input"
             />
           </div>
@@ -249,7 +251,8 @@
             content: valueHtml.value,
             status: articleStatus.value as ArticleStatus,
             tag: selectedMenu.value,
-            headImageUrl: headImgUrl.value
+            headImageUrl: headImgUrl.value,
+            authorId: userCache.getUserCache()?.user_id
         };
         try {
           const response = await apiUpdateNews(data)
@@ -397,7 +400,8 @@
   
   /* 输入框样式 */
   .news-title-input,
-  .news-time-input {
+  .news-time-input,
+  .el-date-picker {
     width: 100%;
     padding: 1rem 1.5rem;
     border: 2px solid #edf2f7;

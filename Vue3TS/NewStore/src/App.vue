@@ -19,11 +19,11 @@
         </keep-alive>
       </router-view>
     </div>
-    <el-backtop :right="40" :bottom="60" />
+    <el-backtop :right="10" :bottom="100" />
     <Footer v-if="isShow && noFooter" ></Footer>
     <Footer2 v-if="isShow && !noFooter" />
   </div>
-  <BottomNavbar v-if="!isDesktop && isShow" />
+  <BottomNavbar v-if="!isDesktop && noFooter && isShow" />
 </template>
 
 <script lang="ts" setup>
@@ -66,6 +66,7 @@ const is404 = computed(() => {
     || route.name === 'QQPay'
     || route.name === 'GSPay'
     || route.name === 'SZRMBPay'
+    || route.name === 'PersonInfo'
     ;
 });
 

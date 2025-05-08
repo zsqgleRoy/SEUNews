@@ -13,6 +13,8 @@ public interface UserService {
     // 根据 ID 获取用户
     UserDTO getUserById(Integer id);
 
+    UserDTO getUserFrontById(Integer id);
+
     // 创建用户
     UserDTO createUser(UserDTO userDTO);
 

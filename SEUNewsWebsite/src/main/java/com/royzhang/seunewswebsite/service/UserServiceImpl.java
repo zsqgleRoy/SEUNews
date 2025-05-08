@@ -37,6 +37,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getUserFrontById(Integer id) {
+        User userOptional = userRepository.findUserByUserId(id);
+        UserDTO userDTO = modelMapper.map(userOptional, UserDTO.class);
+        userDTO.setPassword(null);
+        return userDTO;
+    }
+
+    @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         User savedUser = userRepository.save(user);
@@ -49,8 +57,14 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setUsername(userDTO.getUsername());
-            user.setPassword(userDTO.getPassword());
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+                user.setPassword(userDTO.getPassword()); // 仅当密码非空时更新
+            }
             user.setEmail(userDTO.getEmail());
+            user.setAvatar(userDTO.getAvatar());
+            user.setName(userDTO.getName());
+            user.setPhone(userDTO.getPhone());
+            user.setBirthday(userDTO.getBirthday());
             User updatedUser = userRepository.save(user);
             return modelMapper.map(updatedUser, UserDTO.class);
         }

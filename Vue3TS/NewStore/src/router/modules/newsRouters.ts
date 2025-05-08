@@ -1,3 +1,4 @@
+import { tr } from 'element-plus/es/locale/index.mjs';
 import { type RouteRecordRaw } from 'vue-router';
 
 // 定义新闻相关的路由配置
@@ -19,7 +20,7 @@ const newsRoutes: RouteRecordRaw[] = [
       title: '新闻详情',
       requiresAuth: false
     },
-    props: (route) => ({ id: Number(route.params.id) })
+    props: true
   },
   {
     path: '/newsManage',

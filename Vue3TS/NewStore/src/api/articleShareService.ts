@@ -15,46 +15,45 @@ const api = axios.create({
 
 export const useArticleShareService = () => {
   // 获取用户所有分享
-  const getAllShareByUserId = async (userId: number): Promise<ArticleFavoriteDTO[]> => {
-    try {
-      const response = await api.get<ApiResponse<ArticleFavoriteDTO[]>>(
-        `/api/article-Share/user/${userId}`
-      );
-      return response.data.data;
-    } catch (error) {
-      console.error('获取用户分享失败:', error);
-      return [];
-    }
-  };
+  // const getAllShareByUserId = async (userId: number): Promise<ArticleShareDTO[]> => {
+  //   try {
+  //     const response = await api.get<ApiResponse<ArticleShareDTO[]>>(
+  //       `/api/article-Share/user/${userId}`
+  //     );
+  //     return response.data.data;
+  //   } catch (error) {
+  //     console.error('获取用户分享失败:', error);
+  //     return [];
+  //   }
+  // };
 
   // 获取单个分享详情
-  const getFavoriteById = async (favoriteId: number): Promise<ArticleFavoriteDTO | null> => {
-    try {
-      const response = await api.get<ApiResponse<ArticleFavoriteDTO>>(
-        `/api/article-Share/${favoriteId}`
-      );
-      return response.data.data;
-    } catch (error) {
-      console.error('获取分享详情失败:', error);
-      return null;
-    }
-  };
+  // const getShareById = async (ShareId: number): Promise<ArticleShareDTO | null> => {
+  //   try {
+  //     const response = await api.get<ApiResponse<ArticleShareDTO>>(
+  //       `/api/article-Share/${ShareId}`
+  //     );
+  //     return response.data.data;
+  //   } catch (error) {
+  //     console.error('获取分享详情失败:', error);
+  //     return null;
+  //   }
+  // };
 
-    const getShareNumByArticleId = (articleId: number): Promise<number | null> => {
+    const getShareNumByArticleId = (articleId: number): number => {
         const key = newsCache.generateNewsIdKey(articleId);
-        return newsCache.getNewsCache(key).share;
+        return newsCache.getNewsCache(key)?.share || 0;
     };
 
   // 创建分享
-  const createFavorite = async (
-    dto: Omit<ArticleFavoriteDTO, 'favoriteId'>
-  ): Promise<ArticleFavoriteDTO | null> => {
+  const createShare = async (
+    article_id:number
+  ) => {
     try {
-      const response = await api.post<ApiResponse<ArticleFavoriteDTO>>(
-        '/api/article-Share',
-        dto
+      const response = await api.post(
+        `/api/articles/article-Share/${article_id}`,
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error('创建分享失败:', error);
       return null;
@@ -62,9 +61,9 @@ export const useArticleShareService = () => {
   };
 
   // 删除分享
-  const deleteFavorite = async (favoriteId: number): Promise<boolean> => {
+  const deleteShare = async (ShareId: number): Promise<boolean> => {
     try {
-      await api.delete(`/api/article-Share/${favoriteId}`);
+      await api.delete(`/api/article-Share/${ShareId}`);
       return true;
     } catch (error) {
       console.error('删除分享失败:', error);
@@ -73,7 +72,7 @@ export const useArticleShareService = () => {
   };
 
   // 检查用户是否分享
-  const isArticleFavoritedByUser = async (
+  const isArticleSharedByUser = async (
     userId: number,
     articleId: number
   ): Promise<boolean> => {
@@ -89,31 +88,25 @@ export const useArticleShareService = () => {
   };
 
   // 快捷方法：当前用户分享状态
-  const isCurrentUserFavorited = async (articleId: number): Promise<boolean> => {
+  const isCurrentUserShared = async (articleId: number): Promise<boolean> => {
     const userId = userCache.getUserCache()?.user_id;
     if (!userId) return false;
-    return isArticleFavoritedByUser(userId, articleId);
+    return isArticleSharedByUser(userId, articleId);
   };
 
   return {
-    getAllShareByUserId,
+    // getAllShareByUserId,
     getShareNumByArticleId,
-    getFavoriteById,
-    createFavorite,
-    deleteFavorite,
-    isArticleFavoritedByUser,
-    isCurrentUserFavorited,
+    // getShareById,
+    createShare,
+    deleteShare,
+    isArticleSharedByUser,
+    isCurrentUserShared,
   };
 };
 
 // 类型扩展（src/types/article.d.ts）
-export interface ArticleFavoriteDTO {
-  favoriteId: number;
-  userId: number;
-  articleId: number;
-  createdAt: string;
-  // 其他可能的字段
-}
+
 
 interface ApiResponse<T> {
   data: T;

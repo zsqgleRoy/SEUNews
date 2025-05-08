@@ -18,11 +18,11 @@ public class ArticleFrontDTO {
 
     public ArticleFrontDTO() {}
 
-    public ArticleFrontDTO(Article article, String Url) {
+    public ArticleFrontDTO(Article article) {
         this.id = article.getArticleId();
         this.title = article.getTitle();
         this.publishDate = article.getPublishDate();
-        this.headImageUrl = Url;
+        this.headImageUrl = article.getHeadImageUrl();
         this.status = article.getStatus();
     }
 

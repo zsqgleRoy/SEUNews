@@ -1,9 +1,6 @@
 package com.royzhang.seunewswebsite.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Article {
     @Id
+    @Column(name = "article_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 数据库自增
     private Integer articleId;
 
@@ -47,8 +45,17 @@ public class Article {
     @Column(name = "share_num")
     private long shareNum;
 
+    @Column(name = "last_operator_id")
+    private Integer lastOperatorId;
+
     @Enumerated(EnumType.STRING)
     private ArticleStatus status;
+
+    @Column(name = "head_image_url")
+    private String headImageUrl;
+
+    @Column(name = "is_deleted")
+    private Integer isDeleted;
 
     public enum ArticleStatus {
         DRAFT, PUBLISHED

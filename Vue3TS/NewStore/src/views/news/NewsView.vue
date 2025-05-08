@@ -29,6 +29,7 @@
             <!-- 作者信息 -->
             <div class="author-info">
               <el-avatar 
+                @click="handlePersonPreview(userInfo.authorId || 0)"
                 v-if="userInfo?.avatar" 
                 :size="45" 
                 :src="userInfo?.avatar"
@@ -87,15 +88,17 @@
           :style="{ fontSize: fontSize + 'px' }"
           v-html="article.content"
         ></section>
-        <!-- 互动区域 -->
-        <NewsInteractionBar :article_id="id || 0"/>
+
       </article>
+        <!-- 互动区域 -->
+      <NewsInteractionBar :article_id="id || 0"/>
+      <CommentSection :articleId="id || 0" :userInfo="userInfo" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, onActivated } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import { getNewsById } from '@/api/news';
@@ -103,9 +106,16 @@ import LoadingComponent from "@/components/common/LoadingComponent.vue";
 import NewsInteractionBar from "@/components/News/NewsInteractionBar.vue";
 import type { UserInfo } from '@/cache/userCache';
 import newsCache from '@/cache/newsCache';
+import CommentSection from '@/components/CommentSection.vue';
+import { initialURL } from '@/lib/urls';
 
 const router = useRouter();
 const route = useRoute();
+
+const handlePersonPreview = (item: number) => {
+  router.push(`/userInfo/${item}`)
+  // emit('preview', item)
+}
 
 // 类型定义
 interface Article {
@@ -127,7 +137,7 @@ const errorDescription = ref('');
 const fontSize = ref(20);
 const userInfo = ref<UserInfo | null>(null);
 const id = ref<number | null>(0);
-
+const staticNum = ref(0);
 // 计算属性
 const isUpdated = computed(() => {
   return article.value?.publishDate !== article.value?.updateDate;
@@ -177,24 +187,19 @@ onMounted(async () => {
 });
 onUnmounted(() => {
 });
-watch(
-  () => route.params.id,
-  (article_id) => {
-    if (article_id) {
-      id.value = Number(article_id);
-      const cacheKey = newsCache.generateNewsIdKey(Number(article_id));
-      const cachedData = newsCache.getNewsCache(cacheKey);
-      if (cachedData) {
-        article.value = cachedData;        
-        userInfo.value = cachedData;
-        isLoading.value = false;
-      } else {
-        fetchNews();
-      }
-    }
-  },
-  { immediate: true }
-);
+
+onActivated(()=>{
+  id.value = Number(route.params.id);
+  const cacheKey = newsCache.generateNewsIdKey(Number(id.value));
+  const cachedData = newsCache.getNewsCache(cacheKey);
+  if (cachedData?.avatar) {
+    article.value = cachedData;        
+    userInfo.value = cachedData;
+    isLoading.value = false;
+  } else {
+    fetchNews();
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -248,7 +253,7 @@ watch(
 .article-container {
   user-select: none;
   width: 100%;
-  max-width: 90vw;
+  max-width: 100vw;
   margin: 0 auto;
   background: var(--el-bg-color);
   border-radius: 12px;
@@ -320,9 +325,12 @@ watch(
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .news-view{
+    margin: 0 10px;
+  }
   .article-container {
     width: 100%;
-    padding: 1.5rem;
+    padding: 1.5rem 0.5rem 0 0.5rem;
     border-radius: 0;
     box-shadow: none;
   }

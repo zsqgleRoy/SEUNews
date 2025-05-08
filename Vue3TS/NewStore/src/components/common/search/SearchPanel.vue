@@ -55,8 +55,8 @@
   
       <!-- 结果列表 -->
       <div class="result-list" v-else-if="showResults">
-        <div v-for="item in results" :key="item.id" class="result-item">
-          <div class="item-media">
+        <div v-for="item in results" :key="item.article_id" class="result-item">
+          <div class="item-media" @click="handlePreview(item)">
             <img :src="item.headImageUrl" alt="新闻图片" class="result-image" v-if="item.headImageUrl" />
             <div class="image-placeholder" v-else>
               <el-icon :size="40" color="#909399"><Picture /></el-icon>
@@ -71,20 +71,20 @@
               </el-text>
             </div>
             
-            <h3 class="item-title">
+            <h3 class="item-title" @click="handlePreview(item)">
               <el-text type="primary" tag="strong">{{ item.title }}</el-text>
             </h3>
             
             <section class="item-desc" v-html="item.content"></section>
             
             <div class="item-footer">
-              <div class="footer-left">
+              <div class="footer-left" @click="handlePersonPreview(item)">
                 <el-text type="info" size="small" class="source-info">
                   <img v-if="item.avatar" alt="a" :src="item.avatar"/><el-icon v-else><User /></el-icon> {{ item.author || '未知作者' }}
                 </el-text>
                 <el-divider direction="vertical" />
                 <el-text type="info" size="small" class="source-info">
-                  <el-icon><OfficeBuilding /></el-icon> {{ item.source || item.author || '未知来源' }}
+                  <el-icon><OfficeBuilding /></el-icon> {{ item.author || item.author || '未知来源' }}
                 </el-text>
               </div>
               <div class="item-actions">
@@ -120,7 +120,7 @@
 </template>
   
 <script setup lang="ts">
-  import { ref, computed, onMounted, watch, nextTick } from 'vue'
+  import { ref, computed, onMounted, watch, nextTick, onActivated } from 'vue'
   import { Search } from '@element-plus/icons-vue'
   import type { SearchResult, SearchParams } from './types'
   import { debounce } from 'lodash'
@@ -128,6 +128,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import { formatDate } from '@/utils/format'
   import { ElMessage } from 'element-plus'
+import { it } from 'element-plus/es/locale/index.mjs'
   const route = useRoute()
   const router = useRouter()
   interface Props {
@@ -209,7 +210,6 @@
     emit('search', params)
     try{
       const response = await getNewsListBySearch(params);
-      console.log('搜索结果:', response?.data.content);
       results.value = response?.data.content;
       results.value.forEach(item => {
         item.category = params.tag; // 将 tag 映射到 category
@@ -218,7 +218,7 @@
 
       searchTime.value = Date.now() - startTime; // 计算搜索耗时
     } catch (error) {
-      console.error('搜索失败:', error)
+      ElMessage.error('搜索失败')
     } finally {
       loading.value = false
     }
@@ -226,6 +226,10 @@
   
     const handlePreview = (item: SearchResult) => {
       router.push(`/news/${item.article_id}`)
+      // emit('preview', item)
+    }
+    const handlePersonPreview = (item: SearchResult) => {
+      router.push(`/userInfo/${item.authorId}`)
       // emit('preview', item)
     }
     const handleShare = (item: SearchResult) => {
@@ -252,20 +256,15 @@
     return types[category] || 'info'
   }
   const debouncedSearch = debounce(triggerSearch, 500)
-  watch(
-    () => route.params.query,
-    (newQuery) => {
-      if (newQuery) {
-        keyword.value = newQuery as string
-        handleSearch();
-      }
-    }
-  );
 
   onMounted(() => {
     const newQuery = route.params.query;
     keyword.value = newQuery as string;
   });
+  onActivated(()=>{
+    const newQuery = route.params.query;
+    keyword.value = newQuery as string;
+  })
 </script>
   
 <style scoped lang="scss">

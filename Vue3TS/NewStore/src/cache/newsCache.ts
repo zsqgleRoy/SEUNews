@@ -2,7 +2,23 @@
 import { ref } from 'vue';
 
 interface CacheItem {
-  data: any;
+  data: {
+    article_id: number;
+            title: string;
+            publishDate: string;
+            updateDate: string;
+            content: string;
+            author: string;
+            status: string;
+            tag: number;
+            headImageUrl: string;
+            avatar?: string;
+            likes?: number;
+            coin?: number;
+            favourite?: number;
+            share?: number;
+            authorId?: number;
+  };
   timestamp: number;
   expires: number; // 缓存有效期（毫秒）
 }
@@ -105,6 +121,27 @@ const deleteCache = (cacheKey: string) => {
   }
 };
 
+// 更新新闻缓存中的指定字段
+const updateNewsCacheField = (
+  articleId: string | number,
+  field: keyof CacheItem['data'],
+  value: any
+): boolean => {
+  const idKey = generateNewsIdKey(articleId);
+  const cacheItem = newsCacheStorage.value[idKey];
+  
+  if (cacheItem && field in cacheItem.data) {
+    // 更新字段值和时间戳
+    (cacheItem.data[field] as any) = value;
+    cacheItem.timestamp = Date.now();
+    
+    // 持久化修改
+    saveCache();
+    return true;
+  }
+  return false;
+};
+
 // 清理所有缓存
 const clearAllCache = () => {
   newsCacheStorage.value = {};
@@ -118,6 +155,7 @@ export default {
   getPageCache,
   getNewsCache,
   saveCacheData,
+  updateNewsCacheField,
   deleteCache,
   clearAllCache,
   generatePageKey,

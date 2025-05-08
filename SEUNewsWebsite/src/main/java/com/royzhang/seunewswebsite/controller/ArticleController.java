@@ -9,7 +9,6 @@ import com.royzhang.seunewswebsite.entity.User;
 import com.royzhang.seunewswebsite.repository.UserRepository;
 import com.royzhang.seunewswebsite.service.ArticleService;
 import com.royzhang.seunewswebsite.service.UserService;
-import jakarta.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,13 +89,13 @@ public class ArticleController {
 
     /**
      * 删除文章
-     * @param id 文章ID
+     * @param ids 文章ID
      * @return 响应状态
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Integer id) {
-        articleService.deleteArticle(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteArticlesByIds(@RequestBody List<Integer> ids) {
+        articleService.deleteArticlesByIds(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -110,7 +109,7 @@ public class ArticleController {
             @RequestParam Article.ArticleStatus status,
             Pageable pageable
     ) {
-        Page<ArticleDTO> selectedArticles = articleService.selectAllArticles(status, pageable);
+        Page<ArticleDTO> selectedArticles = articleService.selectAllArticles(status, 0, pageable);
         return ResponseEntity.ok(selectedArticles);
     }
 
@@ -128,7 +127,17 @@ public class ArticleController {
             @RequestParam Article.ArticleStatus status
     ) {
         Pageable pageable = org.springframework.data.domain.PageRequest.of(page - 1, pageSize);
-        Page<ArticleDTO> articles = articleService.selectAllArticles(status, pageable);
+        Page<ArticleDTO> articles = articleService.selectAllArticles(status, 0, pageable);
+        return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/deletedList")
+    public ResponseEntity<Page<ArticleDTO>> getDeletedNewsList(
+            @RequestParam int page,
+            @RequestParam int pageSize
+    ) {
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(page - 1, pageSize);
+        Page<ArticleDTO> articles = articleService.selectDeletedArticles(1, pageable);
         return ResponseEntity.ok(articles);
     }
 
@@ -195,5 +204,16 @@ public class ArticleController {
             // 这里可以添加日志记录，例如：log.error("保存文章失败", e);
             return new ResponseEntity<>("新闻保存失败，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("/article-Share/{article_id}")
+    public ResponseEntity<Boolean> isArticleCoinedByUser(@PathVariable Integer article_id) {
+        boolean share = articleService.createArticleShare(article_id);
+        return new ResponseEntity<>(share, HttpStatus.OK);
+    }
+
+    @GetMapping("/getArticles/{author_id}")
+    public ResponseEntity<List<ArticleFrontDTO>> getArticlesByAuthorId(@PathVariable Integer author_id) {
+        List<ArticleFrontDTO> articles = articleService.getArticleByAuthorId(author_id);
+        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 }

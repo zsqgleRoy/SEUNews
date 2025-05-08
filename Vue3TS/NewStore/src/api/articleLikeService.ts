@@ -3,6 +3,7 @@ import axios from 'axios';
 import { initialURL } from '@/lib/urls';
 import userCache from '@/cache/userCache';
 import newsCache from '@/cache/newsCache';
+import type { ArticleLikeDTO } from '@/types/article';
 
 // 定义响应类型
 interface ApiResponse<T> {
@@ -48,9 +49,9 @@ export const useArticleLikeService = () => {
   };
 
   // 获取单个文章点赞数量
-  const getLikeNumByArticleId = (articleId: number): Promise<number | null> => {
+  const getLikeNumByArticleId = (articleId: number): number => {
     const key = newsCache.generateNewsIdKey(articleId);
-    return newsCache.getNewsCache(key).likes;
+    return newsCache.getNewsCache(key)?.likes || 0;
   };
   // 创建点赞
   const createLike = async (dto: Omit<ArticleLikeDTO, 'likeId'>): Promise<ArticleLikeDTO | null> => {
@@ -67,9 +68,14 @@ export const useArticleLikeService = () => {
   };
 
   // 删除点赞
-  const deleteLike = async (likeId: number): Promise<boolean> => {
+  const deleteLike = async (
+    userId: number,
+    articleId: number
+  ): Promise<boolean> => {
     try {
-      await api.delete(`/article-likes/${likeId}`);
+      await api.delete(
+        `/api/article-likes/user/${userId}/article/${articleId}`
+      );
       return true;
     } catch (error) {
       console.error('Error deleting like:', error);
@@ -83,10 +89,10 @@ export const useArticleLikeService = () => {
     articleId: number
   ): Promise<boolean> => {
     try {
-      const response = await api.get<ApiResponse<boolean>>(
+      const response = await api.get<boolean>(
         `/api/article-likes/user/${userId}/article/${articleId}`
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error('Error checking like status:', error);
       return false;
@@ -110,12 +116,3 @@ export const useArticleLikeService = () => {
     isCurrentUserLiked,
   };
 };
-
-// 类型定义文件 src/types/article.d.ts
-export interface ArticleLikeDTO {
-  likeId: number;
-  userId: number;
-  articleId: number;
-  createdAt: string;
-  // 其他可能的字段
-}

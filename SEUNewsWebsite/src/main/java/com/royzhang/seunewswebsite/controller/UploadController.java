@@ -1,11 +1,8 @@
 package com.royzhang.seunewswebsite.controller;
 
-import com.royzhang.seunewswebsite.dto.Article.MediaDTO;
 import com.royzhang.seunewswebsite.dto.Article.MediaReturnDTO;
-import com.royzhang.seunewswebsite.service.MediaService;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +22,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/upload")
 public class UploadController {
-
-    @Autowired
-    private MediaService mediaService;
 
     // 允许的图片类型白名单
     private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(

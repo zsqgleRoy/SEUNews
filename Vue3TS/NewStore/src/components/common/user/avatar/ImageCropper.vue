@@ -64,6 +64,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {VueCropper} from "vue-cropper";
+import { initialURL } from "@/lib/urls";
 import 'vue-cropper/dist/index.css';
  
 const tip = ref('选择图片后，可移动截图框，拖动遮罩部分可移动图片，也可用滚轮缩放图片')
@@ -146,6 +147,9 @@ const props = defineProps({
     type: Number,
     default: 1
   },
+  myUrl:{
+    type: String
+  }
 })
 const emit = defineEmits(['imgData'])
 const fileName = ref('')              // 图片名称
@@ -203,6 +207,9 @@ const previewIsRow = () => {
 }
 onMounted(() => {
   previewIsRow()
+  if(props.myUrl){
+    option.img = props.myUrl;
+  }
 })
  
 //选择图片
@@ -234,13 +241,51 @@ function selectImg (e) {
   // reader.readAsArrayBuffer(file);
 }
 //上传图片
-async function uploadImg (type) {
-  await cropper.value.getCropBlob(async (data) => {
-    let file = new File([data], fileName.value,{type: data.type})
-    // console.log(file)
-    emit('imgData', {url: URL.createObjectURL(file), name:fileName.value, raw: file, showOverlay:false})
-  })
-  visible.value = false
+async function uploadImg(type) {
+  try {
+    // 1. 获取裁剪后的 Blob
+    const blob = await new Promise((resolve) => {
+      cropper.value.getCropBlob(resolve);
+    });
+
+    // 2. 创建 FormData
+    const formData = new FormData();
+    const file = new File([blob], fileName.value, { type: blob.type });
+    formData.append("file", file);
+
+    // 3. 获取并添加 token（这里需要根据你的实际存储位置获取）
+    const token = "111"; // 示例：从 localStorage 获取
+
+    // 4. 发送请求
+    const response = await fetch(`${initialURL.SERVER_URL}/api/upload/newsImg`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}` // 根据后端要求的格式调整
+      },
+      body: formData
+    });
+
+    // 5. 处理响应
+    const result = await response.json();
+    
+    if (!response.ok || result.code !== 200) {
+      throw new Error(result.message || "上传失败");
+    }
+
+    // 6. 使用后端返回的 URL
+    emit("imgData", {
+      url: result.data.data.url,
+      name: fileName.value,
+      raw: file,
+      showOverlay: false
+    });
+    
+    visible.value = false;
+  } catch (error) {
+    console.error("上传失败:", error);
+    // 这里可以添加错误提示逻辑
+    alert(`上传失败: ${error.message}`);
+  }
 }
  
 // 获取截图框的宽高比

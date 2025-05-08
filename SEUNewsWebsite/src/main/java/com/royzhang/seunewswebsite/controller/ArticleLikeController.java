@@ -22,24 +22,15 @@ public class ArticleLikeController {
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
-    @GetMapping("/{likeId}")
-    public ResponseEntity<ArticleLikeDTO> getLikeById(@PathVariable Integer likeId) {
-        ArticleLikeDTO like = articleLikeService.getLikeById(likeId);
-        if (like != null) {
-            return new ResponseEntity<>(like, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
     @PostMapping
     public ResponseEntity<ArticleLikeDTO> createLike(@RequestBody ArticleLikeDTO likeDTO) {
         ArticleLikeDTO createdLike = articleLikeService.createLike(likeDTO);
         return new ResponseEntity<>(createdLike, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{likeId}")
-    public ResponseEntity<Void> deleteLike(@PathVariable Integer likeId) {
-        articleLikeService.deleteLike(likeId);
+    @DeleteMapping("/user/{userId}/article/{articleId}")
+    public ResponseEntity<Void> deleteLike(@PathVariable Integer userId, @PathVariable Integer articleId) {
+        articleLikeService.deleteLike(userId, articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

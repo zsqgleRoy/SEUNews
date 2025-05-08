@@ -17,6 +17,7 @@
       <el-avatar
         :icon="userItems?.avatar ? null : UserFilled"
         :src="userItems?.avatar ? userItems.avatar : null"
+        :style="{ background:'none' }"
       />
     </div>
   </nav>
@@ -38,7 +39,7 @@ import { UserFilled } from '@element-plus/icons-vue';
 import SEUNews from "./Title.vue"
 const isMobile = ref(window.innerWidth < 768);
 const router = useRouter();
-const userItems = ref([]) as any;
+const userItems = ref() as any;
 const showLoginModal = ref(false);
 
 const handleSearch = (event: CustomEvent) => {
@@ -52,7 +53,7 @@ const closeLoginModal = () => {
 
 // 打开登录弹窗
 const openLoginModal = () => {
-  if (userItems?.value?.avatar) {
+  if (userItems?.value) {
     if (isMobile.value) {
       router.push('/myHome');
     } else {
@@ -76,7 +77,7 @@ const handleResize = () => {
 };
 
 onMounted(() => {
-  userItems.value = userCache.getUserCache();
+  userItems.value = userCache.getUserCache()
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('resize', handleResize);
 });

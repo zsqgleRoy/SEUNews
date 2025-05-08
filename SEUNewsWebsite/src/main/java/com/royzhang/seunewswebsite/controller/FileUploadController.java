@@ -1,5 +1,7 @@
 package com.royzhang.seunewswebsite.controller;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,8 @@ public class FileUploadController {
         }
     }
 
+    @Setter
+    @Getter
     static class ImageResponse {
         private String url;
 
@@ -57,12 +61,5 @@ public class FileUploadController {
             this.url = url;
         }
 
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
     }
 }

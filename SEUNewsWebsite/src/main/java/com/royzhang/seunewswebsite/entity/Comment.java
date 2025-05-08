@@ -1,69 +1,43 @@
 package com.royzhang.seunewswebsite.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CommentID")
+    @Column(name = "comment_id")
     private Integer commentId;
 
-    @Column(name = "ArticleID")
+    @Column(name = "article_id")
     private Integer articleId;
 
-    @Column(name = "UserID")
+    @Column(name = "user_id")
     private Integer userId;
 
-    @Lob
+    @Column(name = "content")
     private String content;
 
-    @Column(name = "PublishDate")
+    @Column(name = "publish_date")
     private Date publishDate;
+
+    @Column(name = "ip")
+    private String ip;
+
+    // 添加实体关联（推荐）
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
 
     // 构造函数、Getter 和 Setter 方法
     public Comment() {}
 
-    public Integer getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(Integer commentId) {
-        this.commentId = commentId;
-    }
-
-    public Integer getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(Integer articleId) {
-        this.articleId = articleId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Date getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
-    }
 }
 

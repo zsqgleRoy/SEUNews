@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,12 +23,22 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> getCommentsByArticleId(Integer articleId) {
-        // 从数据库中获取指定文章 ID 的评论实体列表
-        List<Comment> comments = commentRepository.findByArticleId(articleId);
-        // 将实体列表转换为 DTO 列表
-        return comments.stream()
-                .map(comment -> modelMapper.map(comment, CommentDTO.class))
+        List<Object[]> results = commentRepository.findCommentsWithUserInfo(articleId);
+        return results.stream()
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private CommentDTO convertToDTO(Object[] result) {
+        return CommentDTO.builder()
+                .commentId((Integer) result[0])
+                .content((String) result[1])
+                .publishDate((Date) result[2])
+                .userId((Integer) result[3])
+                .username((String) result[4])
+                .avatar((String) result[5])
+                .ip((String) result[6])
+                .build();
     }
 
     @Override

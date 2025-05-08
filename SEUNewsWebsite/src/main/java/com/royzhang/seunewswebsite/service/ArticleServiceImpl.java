@@ -1,16 +1,11 @@
 package com.royzhang.seunewswebsite.service;
 
-import com.royzhang.seunewswebsite.dto.Article.ArticleDTO;
-import com.royzhang.seunewswebsite.dto.Article.ArticleFrontDTO;
-import com.royzhang.seunewswebsite.dto.Article.ArticleInsertDTO;
-import com.royzhang.seunewswebsite.dto.Article.ArticleUpdateDTO;
+import com.royzhang.seunewswebsite.dto.Article.*;
 import com.royzhang.seunewswebsite.dto.user.UserDTO;
 import com.royzhang.seunewswebsite.entity.Article;
 import com.royzhang.seunewswebsite.entity.ArticleTagId;
-import com.royzhang.seunewswebsite.entity.Media;
 import com.royzhang.seunewswebsite.repository.ArticleRepository;
 import com.royzhang.seunewswebsite.repository.ArticleTagIdRepository;
-import com.royzhang.seunewswebsite.repository.MediaRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -35,12 +30,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private MediaService mediaService;
-
-    @Autowired
-    private MediaRepository mediaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -74,10 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDTO getArticleById(Integer id) {
         return articleRepository.findById(id)
-                .map(article -> {
-                    String url = mediaService.getHeadImageUrl(id);
-                    return new ArticleDTO(article, url);
-                })
+                .map(ArticleDTO::new)
                 .orElse(null);
     }
 
@@ -97,17 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
                     .orElseThrow(() -> new IllegalArgumentException("文章不存在"));
             modelMapper.map(articleUpdateDTO, article);
             articleRepository.save(article);
-
-            // 查找关联的媒体信息
-            List<Media> mediaList = mediaRepository.findByArticleId(id);
-            if (!mediaList.isEmpty()){
-                Media media = mediaList.get(0);
-                // 更新媒体的 url 字段
-                media.setFilePath(articleUpdateDTO.getHeadImageUrl());
-                mediaRepository.save(media);
-                return true;
-            }
-            return false;
+            return true;
         } catch (IllegalArgumentException e) {
             // 文章不存在的异常处理
             throw e;
@@ -124,16 +100,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Pageable pageable) {
+    public Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Integer isDelete, Pageable pageable) {
         if (status == null) {
             return Page.empty();
         }
-        Page<Article> articles = articleRepository.findByStatus(status, pageable);
-        return articles.map(article -> {
-            String url = mediaService.getHeadImageUrl(article.getArticleId());
-            UserDTO author = userService.getUserById(article.getAuthorId());
-            return new ArticleDTO(article, url, author);
-        });
+        Page<Article> articles = articleRepository.findByStatusAndIsDeleted(status, isDelete, pageable);
+        return articles.map(ArticleDTO::new);
     }
 
     private boolean isMatch(Article article, ArticleDTO dto) {
@@ -143,7 +115,6 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDTO convertToDTO(Article article) {
         ArticleDTO dto = modelMapper.map(article, ArticleDTO.class);
         dto.setAuthor(userService.getUserById(article.getAuthorId()).getUsername());
-        dto.setMedias(mediaService.getMediaByArticleId(article.getArticleId()));
         return dto;
     }
 
@@ -152,13 +123,9 @@ public class ArticleServiceImpl implements ArticleService {
     public boolean saveArticle(ArticleInsertDTO dto) {
         try {
             Article article = articleInsertTypeMap.map(dto);
+            article.setLastOperatorId(dto.getAuthorId());
             Article savedArticle = articleRepository.save(article);
             Integer articleId = savedArticle.getArticleId();
-
-            Media media = new Media();
-            media.setArticleId(articleId);
-            media.setFilePath(dto.getHeadImageUrl());
-            mediaRepository.save(media);
 
             if (dto.getTag() != null && dto.getTag() != 0) {
                 ArticleTagId articleTagId = new ArticleTagId();
@@ -179,9 +146,45 @@ public class ArticleServiceImpl implements ArticleService {
         }
         Page<Article> articles = articleRepository.findByTitleAndStatus(title, status, pageable);
         return articles.map(article -> {
-            String url = mediaService.getHeadImageUrl(article.getArticleId());
             UserDTO autho = userService.getUserById(article.getAuthorId());
-            return new ArticleDTO(article, url, autho);
+            return new ArticleDTO(article, autho);
         });
+    }
+
+    @Override
+    public boolean createArticleShare(Integer articleId) {
+        return articleRepository.increaseShare(articleId)!=0;
+    }
+
+    /**
+     * 根据作者 ID 获取文章的前端数据传输对象列表
+     * @param authorId 作者的 ID
+     * @return 文章前端数据传输对象列表
+     */
+    public List<ArticleFrontDTO> getArticleByAuthorId(Integer authorId) {
+        List<Article> articles = articleRepository.findArticlesWithMediasByAuthorId(authorId);
+        List<ArticleFrontDTO> articleFrontDTOS = new ArrayList<>();
+        for (Article article : articles) {
+            ArticleFrontDTO dto = new ArticleFrontDTO(article);
+            articleFrontDTOS.add(dto);
+        }
+        return articleFrontDTOS;
+
+    }
+
+    @Override
+    public void deleteArticlesByIds(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        Integer lastOperatorId = ids.get(0);
+        List<Integer> newIds = new ArrayList<>(ids.subList(1, ids.size()));
+        articleRepository.deleteByIds(newIds, lastOperatorId);
+    }
+
+    @Override
+    public Page<ArticleDTO> selectDeletedArticles(int isDelete, Pageable pageable) {
+        Page<Article> articles = articleRepository.findByIsDeleted(isDelete, pageable);
+        return articles.map(ArticleDTO::new);
     }
 }

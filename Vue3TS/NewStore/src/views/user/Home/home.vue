@@ -12,7 +12,7 @@
                 <!-- 使用 props.info  -->
                 <h2>{{ info?.username || '用户名' }}</h2>
                 <CertificationInfo v-if="info?.isAuthor==='TRUE'" ></CertificationInfo>
-                <p>用户编号 {{ info?.email || '邮箱' }}</p>
+                <p>邮箱 {{ info?.email || '邮箱' }}</p>
             </div>
             <div class="actions">
                 <div @click="handleEditProfile" class="action-item">
@@ -35,7 +35,7 @@
         <!-- 共用区域 -->
         <div class="section">
             <div class="tab-buttons">
-                <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">个人动态</button>
+                <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">动态</button>
                 <button :class="{ active: activeTab === 'likes' }" @click="activeTab = 'likes'">点赞</button>
                 <button :class="{ active: activeTab === 'collections' }" @click="activeTab = 'collections'">收藏</button>
             </div>
@@ -43,13 +43,25 @@
                 <!-- 个人动态内容 -->
                 <div v-if="activeTab === 'activities'">
                     <div class="inner-tab-buttons">
-                        <button :class="{ active: innerActiveTab === 'articles' }" @click="innerActiveTab = 'articles'">我的文章</button>
-                        <button :class="{ active: innerActiveTab === 'comments' }" @click="innerActiveTab = 'comments'">我的评论</button>
+                        <button :class="{ active: innerActiveTab === 'articles' }" @click="innerActiveTab = 'articles'">文章</button>
+                        <button :class="{ active: innerActiveTab === 'comments' }" @click="innerActiveTab = 'comments'">评论</button>
+                        <button :class="{ active: innerActiveTab === 'share' }" @click="innerActiveTab = 'share'">转发</button>
                     </div>
                     <ul v-if="innerActiveTab === 'articles'">
                         <li v-if="articles.length === 0">暂无</li>
                         <li v-for="article in articles" :key="article.id">
-                            {{ article.title }} - {{ article.time }}
+                        <router-link :to="`/news/${article.id}`" class="article-item">
+                            <div class="article-content">
+                            <img v-if="article.headImageUrl" 
+                                :src="article.headImageUrl" 
+                                alt="文章封面" 
+                                class="article-image">
+                            <div class="article-info">
+                                <h3 class="article-title">{{ article.title }}</h3>
+                                <time class="article-time">{{ formatDate(article.publishDate) }}</time>
+                            </div>
+                            </div>
+                        </router-link>
                         </li>
                     </ul>
                     <ul v-if="innerActiveTab === 'comments'">
@@ -85,6 +97,10 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/store/userStore';
 import userCache, {type UserInfo} from '@/cache/userCache';
+import { type ArticleFontDTO } from "@/types/article"
+import axios from 'axios';
+import { initialURL } from '@/lib/urls';
+import {formatDate} from "@/utils/format"
 const router = useRouter();
 const handleEditProfile = () => {
     user.value.email
@@ -112,7 +128,7 @@ const activities = ref<{ id: number; content: string; time: string }[]>([]);
 // 我的评论
 const comments = ref<{ id: number; content: string; time: string }[]>([]);
 // 我的文章
-const articles = ref<{ id: number; title: string; time: string }[]>([]);
+const articles = ref<ArticleFontDTO[]>([]);
 // 点赞
 const likes = ref<{ id: number; content: string; time: string }[]>([]);
 // 收藏
@@ -128,6 +144,15 @@ const handleSettings = () => {
     console.log('设置');
 };
 
+const loadArticles = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/articles/getArticles/${userCache.getUserCache()?.user_id}`);
+    articles.value = result.data;
+  } catch (error) {
+    console.error('获取文章列表失败:', error);
+  }
+}
+
 // 判断是否为手机模式
 const isMobile = ref(window.innerWidth < 768);
 
@@ -135,8 +160,9 @@ const handleResize = () => {
     isMobile.value = window.innerWidth < 768;
 };
 
-    const info : UserInfo | null = userCache.getUserCache();
+const info : UserInfo | null = userCache.getUserCache();
 onMounted(() => {
+    loadArticles();
     window.addEventListener('resize', handleResize);
     // 可以在这里处理数据加载完成后的逻辑
 });
@@ -167,8 +193,13 @@ onBeforeUnmount(() => {
 
 .top-menu h1 {
     margin: 0 auto;
-    font-size: 1.2rem;
-    color: #1e293b;
+    color: transparent;
+    background: linear-gradient(135deg, #0055ff, #6b00bc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    border-image: linear-gradient(135deg, #0055ff, #6b00bc) 1;
+    text-transform: uppercase;
+    font-size: 18px;
 }
 
 .user-info {
@@ -340,13 +371,35 @@ onBeforeUnmount(() => {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .section li:hover {
     transform: translateX(8px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.article-image {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+.article-info {
+    flex: 1;
+}
+
+.article-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.article-info p {
+    font-size: 0.8rem;
+    color: #64748b;
 }
 
 /* 新增动画效果 */
@@ -404,5 +457,108 @@ onBeforeUnmount(() => {
     .tab-buttons {
         gap: 1.5rem;
     }
+
+    .article-image {
+        width: 120px;
+        height: 90px;
+    }
+
+    .article-info h3 {
+        font-size: 1.1rem;
+    }
+
+    .article-info p {
+        font-size: 0.9rem;
+    }
+}
+
+.article-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+}
+
+.article-content {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.article-image {
+  width: 120px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.article-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.article-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1e293b;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-time {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+/* 手机端适配 */
+@media (max-width: 767px) {
+  .article-content {
+    flex-direction: column;
+  }
+
+  .article-image {
+    width: 100%;
+    height: 150px;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+  }
+}
+
+/* 电脑端悬停效果 */
+@media (min-width: 768px) {
+  .article-item:hover .article-title {
+    color: #6366f1;
+    text-decoration: none;
+  }
+
+  .article-item:hover .article-image {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+  }
+}
+
+/* 保持原有li样式 */
+.section li {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section li:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 </style>    

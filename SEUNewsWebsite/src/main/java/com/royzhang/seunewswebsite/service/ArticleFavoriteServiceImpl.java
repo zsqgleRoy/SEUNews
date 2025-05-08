@@ -6,6 +6,7 @@ import com.royzhang.seunewswebsite.repository.ArticleFavoriteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +30,6 @@ public class ArticleFavoriteServiceImpl implements ArticleFavoriteService {
     }
 
     @Override
-    public ArticleFavoriteDTO getFavoriteById(Integer favoriteId) {
-        Optional<ArticleFavorite> favoriteOptional = articleFavoriteRepository.findById(favoriteId);
-        return favoriteOptional.map(favorite -> modelMapper.map(favorite, ArticleFavoriteDTO.class)).orElse(null);
-    }
-
-    @Override
     public ArticleFavoriteDTO createFavorite(ArticleFavoriteDTO favoriteDTO) {
         ArticleFavorite favorite = modelMapper.map(favoriteDTO, ArticleFavorite.class);
         ArticleFavorite savedFavorite = articleFavoriteRepository.save(favorite);
@@ -42,8 +37,9 @@ public class ArticleFavoriteServiceImpl implements ArticleFavoriteService {
     }
 
     @Override
-    public void deleteFavorite(Integer favoriteId) {
-        articleFavoriteRepository.deleteById(favoriteId);
+    @Transactional
+    public void deleteFavorite(Integer userId, Integer articleId) {
+        articleFavoriteRepository.deleteByUserIdAndArticleId(userId, articleId);
     }
 
     @Override

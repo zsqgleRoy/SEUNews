@@ -19,4 +19,6 @@ public interface ArticleCoinService {
 
     // 统计文章的总投币数
     Integer getTotalCoinsForArticle(Integer articleId);
+
+    boolean isArticleCoinedByUser(Integer userId, Integer articleId);
 }

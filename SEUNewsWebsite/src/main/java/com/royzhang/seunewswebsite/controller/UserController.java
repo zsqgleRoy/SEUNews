@@ -94,6 +94,21 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/setusername/{username}")
+    public ResponseEntity<Boolean> findUserExistByUsername(@PathVariable String username) {
+        try {
+            Optional<UserBaseInfoDTO> userBaseInfoDTOOptional = userService.findUserByUsername(username);
+            if (userBaseInfoDTOOptional.isPresent()) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(false, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            logger.error("Error finding user by username: {}", e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     // 修改控制器方法
     @PostMapping("/login")
@@ -127,6 +142,20 @@ public class UserController {
         } catch (Exception e) {
             logger.error("用户注册失败: 发生异常, 用户名: {}", userDTO.getUsername(), e);
             return new ResponseEntity<>("用户注册失败，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/userInfo/{id}")
+    public ResponseEntity<UserDTO> getUserFrontById(@PathVariable Integer id) {
+        try {
+            UserDTO user = userService.getUserById(id);
+            if (user != null) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Error getting user by ID: {}", e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

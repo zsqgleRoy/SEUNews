@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
   import WaterMark from '@/components/common/watermark/WaterMarkBack.vue'
-  import { onMounted, ref, watch } from 'vue'
+  import { onActivated, onMounted, ref } from 'vue'
   import ChatMessageList from './components/ChatMessageList.vue'
   import ChatInput from './components/ChatInput.vue'
   import axios from 'axios'
@@ -176,6 +176,16 @@
       localStorage.setItem(userCache.getUserCache()?.username || 'null', sessionId.value);
     }
   });
+  onActivated(()=>{
+    userId.value = userCache.getUserCache()?.user_id;
+    if (localStorage.getItem(userCache.getUserCache()?.username || 'null')) {
+      sessionId.value = localStorage.getItem(userCache.getUserCache()?.username || 'null')!;
+      loadChatHistory();
+    }
+    else {
+      localStorage.setItem(userCache.getUserCache()?.username || 'null', sessionId.value);
+    }    
+  })
 </script>
   
 <style scoped lang="scss">

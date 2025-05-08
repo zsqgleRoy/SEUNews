@@ -1,6 +1,5 @@
 package com.royzhang.seunewswebsite.dto.Article;
 
-import com.royzhang.seunewswebsite.entity.Media;
 import lombok.Getter;
 import lombok.Setter;
 

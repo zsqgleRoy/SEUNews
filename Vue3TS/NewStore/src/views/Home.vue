@@ -193,7 +193,7 @@
   });
 
   // 监听用户缓存变化
-  watch(() => userCache.getUserCache(), () => {
+  watch(() => userCache.getUserCache()?.user_id, () => {
     updateTip();
   });
 

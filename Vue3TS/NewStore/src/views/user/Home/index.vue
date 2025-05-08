@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, toDisplayString } from 'vue'
+import { ref, onMounted, watch, computed, toDisplayString, onActivated, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LongBanner from './LongBanner.vue'
 import Menu from "./LeftMenu.vue"
@@ -105,10 +105,14 @@ onMounted(() => {
   updateLayout()
 })
 
-watch(() => route.path, (newPath) => {
-  if (!isDesktop.value && newPath !== '/') {
+onUnmounted(()=>{
+  if (!isDesktop.value && route.path !== '/') {
     showMobileMenu.value = false
   }
+})
+
+onActivated(()=>{
+  window.removeEventListener('resize', updateLayout)
 })
 </script>
 

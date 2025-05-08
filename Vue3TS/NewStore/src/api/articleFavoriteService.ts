@@ -3,6 +3,8 @@ import axios from 'axios';
 import { initialURL } from '@/lib/urls';
 import userCache from '@/cache/userCache';
 import newsCache from '@/cache/newsCache';
+import type { ArticleFavoriteDTO } from '@/types/article';
+import type { ar } from 'element-plus/es/locale/index.mjs';
 
 // 复用已有的axios实例配置
 const api = axios.create({
@@ -29,7 +31,7 @@ export const useArticleFavoriteService = () => {
 
   const getTotalFavoritesForArticle = async (articleId: number): Promise<number> => {
     const key = newsCache.generateNewsIdKey(articleId);
-    return newsCache.getNewsCache(key).favourite;
+    return newsCache.getNewsCache(key)?.favourite || 0;
   };
 
   // 获取单个收藏详情
@@ -50,11 +52,11 @@ export const useArticleFavoriteService = () => {
     dto: Omit<ArticleFavoriteDTO, 'favoriteId'>
   ): Promise<ArticleFavoriteDTO | null> => {
     try {
-      const response = await api.post<ApiResponse<ArticleFavoriteDTO>>(
+      const response = await api.post<ArticleFavoriteDTO>(
         '/api/article-favorites',
         dto
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error('创建收藏失败:', error);
       return null;
@@ -62,9 +64,12 @@ export const useArticleFavoriteService = () => {
   };
 
   // 删除收藏
-  const deleteFavorite = async (favoriteId: number): Promise<boolean> => {
+  const deleteFavorite = async (
+    userId: number,
+    articleId: number
+  ): Promise<boolean> => {
     try {
-      await api.delete(`/api/article-favorites/${favoriteId}`);
+      await api.delete(`/api/article-favorites/user/${userId}/article/${articleId}`);
       return true;
     } catch (error) {
       console.error('删除收藏失败:', error);
@@ -106,14 +111,6 @@ export const useArticleFavoriteService = () => {
   };
 };
 
-// 类型扩展（src/types/article.d.ts）
-export interface ArticleFavoriteDTO {
-  favoriteId: number;
-  userId: number;
-  articleId: number;
-  createdAt: string;
-  // 其他可能的字段
-}
 
 interface ApiResponse<T> {
   data: T;

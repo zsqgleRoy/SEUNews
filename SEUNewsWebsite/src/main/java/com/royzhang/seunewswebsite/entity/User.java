@@ -38,6 +38,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private IsAuthor isAuthor;
 
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "birthday")
+    private String birthday;
+
     // 构造函数、Getter 和 Setter 方法
     public User() {}
 

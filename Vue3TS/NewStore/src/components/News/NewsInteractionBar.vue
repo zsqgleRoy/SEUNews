@@ -33,16 +33,22 @@
 </template>
   
 <script setup lang="ts">
-  import { ref, computed, type Component, onMounted } from 'vue'
-  import { Coin, Star, MoreFilled } from '@element-plus/icons-vue'
+  import { ref, computed, type Component, onMounted, watch, onActivated } from 'vue'
+  import { Star, MoreFilled } from '@element-plus/icons-vue'
   import likeImage from '@/assets/imges/like.png'
+  import likeedImage from '@/assets/imges/liked.png'
   import shareImage from '@/assets/imges/share.png'
+  import staredImage from '@/assets/imges/stared.png'
+  import coinImage from '@/assets/imges/coin.png'
+  import coinedImage from '@/assets/imges/coined.png'
   import { useArticleLikeService } from '@/api/articleLikeService'
   import { useArticleCoinService } from '@/api/articleCoinService'
   import { useArticleFavoriteService } from '@/api/articleFavoriteService'
   import { useArticleShareService } from '@/api/articleShareService'
-import userCache from '@/cache/userCache'
-import { ElMessage } from 'element-plus'
+  import userCache from '@/cache/userCache'
+  import { ElMessage } from 'element-plus'
+  import { useRoute } from 'vue-router'
+  import newsCache from '@/cache/newsCache'
 
   // 类型定义
   type InteractionType = 'likes' | 'coins' | 'star' | 'forwards'
@@ -64,18 +70,17 @@ import { ElMessage } from 'element-plus'
   const props = defineProps<{
     article_id: number;
   }>();
-
+  const route = useRoute()
   const likeService = useArticleLikeService()
   const coinService = useArticleCoinService()
   const favoriteService = useArticleFavoriteService()
   const shareService = useArticleShareService()
-
   // 响应式数据
   const interactionState = ref<Record<InteractionType, InteractionState>>({
-    likes: { count: 20, active: false },
-    coins: { count: 999999999, active: false },
-    star: { count: 999999999, active: false },
-    forwards: { count: 202999999, active: false }
+    likes: { count: 0, active: false },
+    coins: { count: 0, active: false },
+    star: { count: 0, active: false },
+    forwards: { count: 0, active: false }
   })
   
   // 格式化后的数据（自动更新）
@@ -95,20 +100,23 @@ import { ElMessage } from 'element-plus'
 
   const loadLikes = async () => {
     try {
-        const count = await likeService.getLikeNumByArticleId(props.article_id) || 0
-            interactionState.value.likes = {
+        const count = await likeService.getLikeNumByArticleId(props.article_id)
+        interactionState.value.likes = {
             count,
             active: await likeService.isCurrentUserLiked(props.article_id)
         }
     } catch (error) {
-        console.error('加载点赞数据失败:', error)
+        ElMessage.error('加载点赞数据失败:')
     }
     }
 
     const loadCoins = async () => {
     try {
         const count = await coinService.getTotalCoinsForArticle(props.article_id)
-        interactionState.value.coins.count = count
+        interactionState.value.coins = {
+            count,
+            active: await coinService.isArticleCoinedByUser(props.article_id)
+        }
     } catch (error) {
         console.error('加载投币数据失败:', error)
     }
@@ -122,18 +130,15 @@ import { ElMessage } from 'element-plus'
                 active: await favoriteService.isCurrentUserFavorited(props.article_id)
             }
         } catch (error) {
-            console.error('加载收藏数据失败:', error)
+            ElMessage.error('加载收藏数据失败:')
         }
     }
     const loadShare = async () => {
         try {
             const count = await shareService.getShareNumByArticleId(props.article_id) || 0
-            interactionState.value.forwards = {
-                count,
-                active: await favoriteService.isCurrentUserFavorited(props.article_id)
-            }
+            interactionState.value.forwards.count = count
         } catch (error) {
-            console.error('加载收藏数据失败:', error)
+            ElMessage.error('加载分享数据失败:')
         }
     }
 
@@ -172,50 +177,91 @@ import { ElMessage } from 'element-plus'
     switch(type) {
       case 'likes':
         state.active = !state.active
+        if(state.active){
+          const likeDTO1 = {
+            articleId: props.article_id,
+            userId: userCache.getUserCache()?.user_id || 0,
+            likeDate: new Date().toISOString()
+          }
+          likeService.createLike(likeDTO1);
+        }
+        else
+            likeService.deleteLike(userCache.getUserCache()?.user_id || 0, props.article_id);
         state.count += state.active ? 1 : -1
+        newsCache.updateNewsCacheField(props.article_id, 'likes', state.count);
         break
       case 'coins':
-        state.count += state.active ? -1 : 1
-        state.active = !state.active
+        if(!state.active) {
+          state.active = !state.active
+
+        }
+        ElMessage.success('能量币已投送')
+        state.count += 1
+        coinService.createCoin({
+          articleId: props.article_id,
+          userId: userCache.getUserCache()?.user_id || 0,
+          coinCount: 1,
+          coinDate: new Date().toISOString()
+        })
+        newsCache.updateNewsCacheField(props.article_id, 'coin', state.count);
         break
       case 'star':
-        state.count += state.active ? -2 : 2
         state.active = !state.active
+        if(state.active){
+          const favoritDTO1 = {
+            articleId: props.article_id,
+            userId: userCache.getUserCache()?.user_id || 0,
+            favoriteDate: new Date().toISOString()
+          }
+          favoriteService.createFavorite(favoritDTO1);
+        }
+        else
+            favoriteService.deleteFavorite(userCache.getUserCache()?.user_id || 0, props.article_id);
+        state.count += state.active ? 1 : -1
+        newsCache.updateNewsCacheField(props.article_id, 'favourite', state.count);
         break
       case 'forwards':
+        shareService.createShare(props.article_id)
         state.count += 1
+        newsCache.updateNewsCacheField(props.article_id, 'share', state.count);
         break
     }
   }
   
-  onMounted(async () => {
-    await Promise.all([
-      loadLikes(),
-      loadCoins(),
-      loadFavorites(),
-      loadShare(),
-      // loadForwards()
-    ])
+  onMounted(() => {
+    loadData();
+  });
+
+  onActivated(()=>{
+    loadData();
   })
+
+  // 统一加载数据的函数
+  const loadData = async () => {
+    await loadLikes();
+    await loadCoins();
+    await loadFavorites();
+    await loadShare();
+  };
 
   // 按钮配置
   const cyberButtons = computed<InteractionButton[]>(() => [
     {
-      icon: likeImage,
+      icon: interactionState.value.likes.active? likeedImage : likeImage,
       text: '量子点赞赋能',
       dataKey: 'likes',
       action: () => handleInteraction('likes'),
       activeClass: interactionState.value.likes.active ? 'pulse-active' : ''
     },
     {
-      icon: Coin,
+      icon: interactionState.value.coins.active? coinedImage: coinImage ,
       text: '能量币投送',
       dataKey: 'coins',
       action: () => handleInteraction('coins'),
       activeClass: interactionState.value.coins.active ? 'coin-active' : ''
     },
     {
-      icon: Star,
+      icon: interactionState.value.star.active? staredImage : Star,
       text: interactionState.value.star.active ? '数据已归档' : '核心数据收藏',
       dataKey: 'star',
       action: () => handleInteraction('star'),
@@ -241,16 +287,17 @@ import { ElMessage } from 'element-plus'
 <style scoped lang="scss">
   /* 变量定义 */
   $cyber-purple: #000000;
-  $cyber-yellow: #ffff00;
   $mobile-breakpoint: 768px;
   
   .cyber-interaction {
-    margin: 30px auto;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 10px;
     max-width: 100vw;
+    background-color: white;
+    padding-bottom: 20px;
   }
   
   .icon-group {
@@ -293,7 +340,6 @@ import { ElMessage } from 'element-plus'
       content: '';
       position: absolute;
       inset: -2px;
-      border: 1px solid $cyber-yellow;
       border-radius: 50%;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -340,13 +386,17 @@ import { ElMessage } from 'element-plus'
   }
   
   @media (max-width: $mobile-breakpoint) {
+    .cyber-interaction{
+        margin: 0 0;
+        padding: 20px 0;
+    }
     .icon-group {
       gap: 0.5rem;
     }
   
     .interaction-item {
       flex-direction: column;
-      width: 80px;
+      width: 60px;
       min-width: auto;
       padding: 0.2rem;
       gap: 0.2rem;

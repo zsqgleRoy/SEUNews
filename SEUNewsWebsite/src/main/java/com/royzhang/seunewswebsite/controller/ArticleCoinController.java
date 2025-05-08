@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article-coins")
+@RequestMapping("/api/article-coins")
 public class ArticleCoinController {
 
     @Autowired
@@ -52,5 +52,11 @@ public class ArticleCoinController {
     public ResponseEntity<Integer> getTotalCoinsForArticle(@PathVariable Integer articleId) {
         Integer totalCoins = articleCoinService.getTotalCoinsForArticle(articleId);
         return new ResponseEntity<>(totalCoins, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}/article/{articleId}")
+    public ResponseEntity<Boolean> isArticleCoinedByUser(@PathVariable Integer userId, @PathVariable Integer articleId) {
+        boolean isCoined = articleCoinService.isArticleCoinedByUser(userId, articleId);
+        return new ResponseEntity<>(isCoined, HttpStatus.OK);
     }
 }

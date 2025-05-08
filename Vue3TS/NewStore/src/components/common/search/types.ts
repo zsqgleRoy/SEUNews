@@ -10,7 +10,8 @@ export interface SearchResult {
     status: string;
     tag: number;
     headImageUrl: string;
-    avatar:string
+    avatar:string;
+    authorId?:string;
   }
   
   export interface SearchParams {

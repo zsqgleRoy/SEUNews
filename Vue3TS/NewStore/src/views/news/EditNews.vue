@@ -56,8 +56,13 @@ onMounted(async () => {
 
 .top-menu h1 {
     margin: 0 auto;
-    font-size: 1.2rem;
-    color: #1e293b;
+    color: transparent;
+    background: linear-gradient(135deg, #0055ff, #6b00bc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    border-image: linear-gradient(135deg, #0055ff, #6b00bc) 1;
+    text-transform: uppercase;
+    font-size: 18px;
 }
 
 .editor-container {
