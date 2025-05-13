@@ -57,9 +57,9 @@
   import BeijingTime from '@/components/BeijingTime.vue';
   import Login from "@/views/user/Login.vue";
   import Lunner from "@/components/Lunner.vue";
-  import NewNews from './home/NewNews.vue';
-  import HeadlineNews from '@/views/news/HeadlineNews.vue';
-  import NewsCategory from '@/views/news/NewsCategory.vue';
+  import NewNews from '@/views/home/NewNews.vue';
+  import HeadlineNews from '@/views/home/HeadlineNews.vue';
+  import NewsCategory from '@/views/home/NewsCategory.vue';
   import newsCache from '@/cache/newsCache';
   import userCache from '@/cache/userCache';
 

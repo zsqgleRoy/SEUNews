@@ -107,7 +107,6 @@ import NewsInteractionBar from "@/components/News/NewsInteractionBar.vue";
 import type { UserInfo } from '@/cache/userCache';
 import newsCache from '@/cache/newsCache';
 import CommentSection from '@/components/CommentSection.vue';
-import { initialURL } from '@/lib/urls';
 
 const router = useRouter();
 const route = useRoute();

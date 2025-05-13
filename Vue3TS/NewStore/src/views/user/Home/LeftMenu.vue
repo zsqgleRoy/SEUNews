@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef } from "vue";
+import { ref, computed, shallowRef, onMounted } from "vue";
 
 // Check if a route has an external link
 const hasExternalLink = (route: any) => {
@@ -92,12 +92,99 @@ import { useUserStore } from '@/store/userStore';
 import MembershipEntry from './MembershipEntry.vue'
 import { Paperclip, Management, ChromeFilled, List, Message, HomeFilled, Service, User, Files, Document, ArrowRight, ArrowDown, Phone, Link, Plus } from '@element-plus/icons-vue';
 import { ElMessage } from "element-plus";
+import useCache from "@/cache/userCache";
 const info = shallowRef<UserInfo | null>(userCache.getUserCache());
 const route = useRoute();
 const emits = defineEmits(['menuItemClick']);
 const router = useRouter();
 const userStore = useUserStore();
-const routes = [
+const isAuthor = ref(false)
+const routes = ref(computed(() => !isAuthor.value ?
+[
+  {
+    path: '/index',
+    name: '个人中心',
+    meta:{
+      isExternal: false,
+      isPhone: false
+    }
+  },
+  {
+    path: '/contact',
+    name: '联系我们',
+    icon: Paperclip,
+    children: [
+      { path: '/getService', name: '在线客服', icon: Service,
+        meta:{
+          isExternal: false,
+          isPhone: false
+        }
+      },
+      { path: 'https://mail.qq.com',
+        icon: Message,
+        name: '邮箱联系',
+        meta: {
+          isExternal: true,
+          isPhone: false
+        }
+      },
+      { path: 'tel:18061209838', name: '电话联系', icon: Phone,
+        meta: {
+          isExternal: true,
+          isPhone: true 
+        }
+      },
+      { path: 'https://res.abeim.cn/api-qq.qun?qun=1036733598', name: 'QQ联系',
+        meta: {
+          isExternal: true,
+          isPhone: false 
+        }
+      },
+    ],
+    meta:{
+      isExternal: false,
+      isPhone: false
+    }
+  },
+  {
+    path: '/website',
+    name: '关于网站',
+    icon: ChromeFilled,
+    children: [
+      { path: '/news/15', name: '服务条款',
+        meta:{
+          isExternal: false,
+          isPhone: false
+        }
+      },
+      { path: '/news/14', name: '隐私协议',
+        meta:{
+          isExternal: false,
+          isPhone: false
+        }
+      },
+      { path: '/news/16', name: '用户手册',
+        meta:{
+          isExternal: false,
+          isPhone: false
+        }
+      },
+    ],
+    meta:{
+      isExternal: false,
+      isPhone: false
+    }
+  },
+  {
+    path: '/', name: '返回首页', icon: HomeFilled,
+    meta:{
+      isExternal: false,
+      isPhone: false
+    }
+  }
+]
+:              // 作者路由
+[
   {
     path: '/index',
     name: '个人中心',
@@ -117,6 +204,28 @@ const routes = [
         } 
       },
       { path: '/newsManage', name: '新闻列表', icon: List,
+          meta:{
+          isExternal: false,
+          isPhone: false
+        } 
+      },
+    ],
+    meta:{
+      isExternal: false,
+      isPhone: false
+    }
+  },
+  {
+    name: '用户管理',
+    icon: Management,
+    children: [
+      { path: '/addUser', name: '添加用户', icon: Plus,
+        meta:{
+          isExternal: false,
+          isPhone: false
+        } 
+      },
+      { path: '/userManage', name: '用户列表', icon: List,
           meta:{
           isExternal: false,
           isPhone: false
@@ -201,9 +310,9 @@ const routes = [
       isPhone: false
     }
   }
-];
+]));
 
-const processedRoutes = computed(() => routes);
+const processedRoutes = computed(() => routes.value);
 
 const vip_info = ref({
   isMember: true,
@@ -244,7 +353,7 @@ router.afterEach(() => {
   window.scrollTo(0, 0);
 });
 
-const isMenuOpen = ref<boolean[]>(new Array(routes.length).fill(false));
+const isMenuOpen = ref<boolean[]>(new Array(routes.value.length).fill(false));
 
 const toggleMenu = (index: number) => {
   isMenuOpen.value[index] = !isMenuOpen.value[index];
@@ -259,7 +368,7 @@ const isActiveParent = (routeItem: any) => {
 const handleClick = (path: string) => {
   emits('menuItemClick', path);
   if (window.innerWidth < 768) {
-    const index = routes.findIndex(r => r.children?.some(c => c.path === path));
+    const index = routes.value.findIndex(r => r.children?.some(c => c.path === path));
     if (index !== -1) {
       isMenuOpen.value[index] = false;
     }
@@ -269,6 +378,10 @@ const handleClick = (path: string) => {
 const handleLogout = () => {
   userStore.logout(router);
 };
+
+onMounted(()=>{
+  isAuthor.value = (info.value?.isAuthor==="TRUE")
+})
 </script>
 
 <style scoped lang="scss">
