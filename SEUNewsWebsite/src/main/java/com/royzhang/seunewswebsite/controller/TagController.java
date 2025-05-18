@@ -56,10 +56,7 @@ public class TagController {
     @GetMapping("/name/{name}")
     public ResponseEntity<TagDTO> findTagByName(@PathVariable String name) {
         Optional<TagDTO> tagOptional = tagService.findTagByName(name);
-        if (tagOptional.isPresent()) {
-            return new ResponseEntity<>(tagOptional.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return tagOptional.map(tagDTO -> new ResponseEntity<>(tagDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @GetMapping("/list")
     public ResponseEntity<List<TagDTO>> findAllTags() {

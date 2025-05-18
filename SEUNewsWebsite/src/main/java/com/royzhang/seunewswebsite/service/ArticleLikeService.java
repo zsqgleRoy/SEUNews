@@ -16,4 +16,6 @@ public interface ArticleLikeService {
 
     // 根据用户 ID 和文章 ID 检查是否已点赞
     boolean isArticleLikedByUser(Integer userId, Integer articleId);
+
+    List<ArticleLikeDTO> getAllLikesByUserId(Integer userId);
 }

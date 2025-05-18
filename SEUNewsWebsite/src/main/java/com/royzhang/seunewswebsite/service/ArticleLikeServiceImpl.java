@@ -46,4 +46,12 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
     public boolean isArticleLikedByUser(Integer userId, Integer articleId) {
         return articleLikeRepository.existsByUserIdAndArticleId(userId, articleId);
     }
+
+    @Override
+    public List<ArticleLikeDTO> getAllLikesByUserId(Integer userId) {
+        List<ArticleLike> likes = articleLikeRepository.findByUserId(userId);
+        return likes.stream()
+                .map(like -> modelMapper.map(like, ArticleLikeDTO.class))
+                .collect(Collectors.toList());
+    }
 }

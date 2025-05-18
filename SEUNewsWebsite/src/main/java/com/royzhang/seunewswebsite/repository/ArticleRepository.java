@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 文章仓储接口，定义了文章相关的数据库操作方法。
@@ -39,11 +39,17 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
      * 根据文章状态分页查询文章列表。
      *
      * @param status   文章状态
-     * @param isDelete
+     * @param isDeleted
      * @param pageable 分页信息
      * @return 分页的文章列表
      */
-    Page<Article> findByStatusAndIsDeleted(Article.ArticleStatus status, Integer isDelete, Pageable pageable);
+    @Query(value = "SELECT a FROM Article a LEFT JOIN FETCH a.tags WHERE a.status = :status AND a.isDeleted = :isDeleted ORDER BY a.publishDate DESC",
+            countQuery = "SELECT COUNT(a) FROM Article a WHERE a.status = :status AND a.isDeleted = :isDeleted")
+    Page<Article> findByStatusAndIsDeleted(
+            @Param("status") Article.ArticleStatus status,
+            @Param("isDeleted") Integer isDeleted,
+            Pageable pageable
+    );
 
     /**
      * 根据作者 ID 和文章状态查询文章列表（示例复合查询）。
@@ -86,9 +92,43 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     /**
      * 根据文章状态分页查询文章列表。
      *
-     * @param isDelete
+     * @param isDeleted
      * @param pageable 分页信息
      * @return 分页的文章列表
      */
-    Page<Article> findByIsDeleted(int isDelete, Pageable pageable);
+    @Query(value = "SELECT a FROM Article a LEFT JOIN FETCH a.tags WHERE a.isDeleted = :isDeleted ORDER BY a.publishDate DESC",
+            countQuery = "SELECT COUNT(a) FROM Article a WHERE a.isDeleted = :isDeleted")
+    Page<Article> findByIsDeleted(
+            @Param("isDeleted") Integer isDeleted,
+            Pageable pageable
+    );
+
+    @Query(value = """
+    SELECT a FROM Article a
+    LEFT JOIN FETCH a.tags t
+    WHERE a.articleId IN (
+        SELECT aInner.articleId FROM Article aInner
+        JOIN aInner.tags tInner
+        WHERE aInner.status = :status
+        AND aInner.isDeleted = :isDeleted
+        AND tInner.tagId = :tagId
+        ORDER BY aInner.publishDate DESC
+    )
+""",
+            countQuery = """
+    SELECT COUNT(DISTINCT a) FROM Article a
+    JOIN a.tags t
+    WHERE a.status = :status
+    AND a.isDeleted = :isDeleted
+    AND t.tagId = :tagId
+""")
+    Page<Article> findByStatusAndTag(
+            @Param("status") Article.ArticleStatus status,
+            @Param("isDeleted") Integer isDeleted,
+            @Param("tagId") Integer tagId,
+            Pageable pageable
+    );
+
+    @Query("SELECT a FROM Article a LEFT JOIN FETCH a.tags WHERE a.articleId = :id")
+    Optional<Article> findByIdWithTags(@Param("id") Integer id);
 }

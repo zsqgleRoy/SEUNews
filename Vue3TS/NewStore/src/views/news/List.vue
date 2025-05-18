@@ -4,7 +4,7 @@
       <svg class="news-icon" viewBox="0 0 24 24">
         <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
       </svg>
-      <h1 class="news-title">新闻动态</h1>
+      <h1 class="news-title">{{ menu[tagId -1 ].label }} - 新闻列表</h1>
     </div>
 
     <div v-if="isLoading" class="loading-state">
@@ -49,47 +49,46 @@
         </router-link>
       </li>
     </ul>
+    <el-empty
+      v-if="newsList.length==0"
+      description="列表为空"
+    >
+      <el-button type="primary" @click="gotoHome">返回首页</el-button>
+    </el-empty>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
-  import { getNewsList as apiGetNewsList, ArticleStatus } from '@/api/news';
-  import newsCache from '@/cache/newsCache';
-  
-  const newsList = ref([]);
+  import { ref, watch } from 'vue';
+  import { getNewsListByTag, ArticleStatus } from '@/api/news';
+  import { useRoute, useRouter } from 'vue-router';
+  import menuCache from '@/cache/menuCache';
+  const menuKey = menuCache.generateCacheKey();
+  const menu = ref(menuCache.getCache(menuKey))
+  const route = useRoute();
+  const newsList = ref<any>([]);
   const isLoading = ref(true);
   const error = ref('');
-  
+  const tagId = ref(Number(route.params.tag_id));
+  const router = useRouter();
   const fetchNewsList = async (
     page: number = 1,
-    pageSize: number = 10,
-    status: ArticleStatus = ArticleStatus.PUBLISH
-    ) => {
+    pageSize: number = 999999999,
+    status: ArticleStatus = ArticleStatus.PUBLISH,
+    tag: number = tagId.value
+  ) => {
     isLoading.value = true;
     error.value = '';
-    const cacheKey = newsCache.generatePageKey({ page, pageSize, status });
-    const cachedData = newsCache.getPageCache(cacheKey);
-    if (cachedData) {
-        newsList.value = cachedData;
-        isLoading.value = false;
-        return;
-    }
     try {
-        const response = await apiGetNewsList({ page, pageSize, status });
+        const response = await getNewsListByTag({ page, pageSize, status, tag });
         newsList.value = response?.data.content;
-        // 保存缓存，有效期2小时
-        newsCache.saveCacheData(cacheKey, response?.data.content, 7200000);
     } catch (err: any) {
         error.value = err.message || '获取新闻列表失败';
     } finally {
         isLoading.value = false;
     }
 }
-  
-  onMounted(() => {
-    fetchNewsList();
-  });
+
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -97,6 +96,22 @@ const formatDate = (dateString: string) => {
     day: '2-digit'
   });
 };
+
+const gotoHome = () => {
+  router.push("/")
+}
+
+watch(
+  () => route.params.tag_id,
+  (newTagId) => {
+    if(!isNaN(Number(newTagId))){
+      tagId.value = Number(newTagId);
+      fetchNewsList();
+    }
+    return
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped lang="scss">

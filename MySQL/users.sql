@@ -1,17 +1,44 @@
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (1, '央广网', '12345678', '2973811@cnr.cn', '2025-03-10 15:30:15', 'http://seunewsbac.pgrm.cc/static/news-images/20250328223648687_cf68d900.webp', 'TRUE', '央广网', '130000000', '2003-10-01T16:00:00.000Z');
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (2, '东南新闻', '12345678', 'zsqgle@cxxy.seu.edu.cn', '2025-03-11 21:40:10', 'http://seunews.pgrm.cc/src/assets/imges/seuLogo.png', 'FALSE', NULL, NULL, '2025-05-07');
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (3, 'a', 'aaaaaaaa', 'aaa@aa', '2025-03-11 22:50:50', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (4, 'CC2N', '11111111', 'aaa@aaa.com', '2025-03-11 23:42:21', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (5, '1111', '11111111', '1111@11111.com', '2025-03-11 15:50:10', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (6, '1234', '12341234', '1234@1234.com', '2025-03-11 15:51:32', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (7, '1314', '12345678', '2222@222.com', '2025-03-12 06:00:17', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (8, '111111', '12345678', '111@111.com', '2025-03-13 14:55:44', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (9, '新华网', '12345678', 'xxpl@news.cn', '2025-03-23 11:14:59', NULL, 'TRUE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (10, '人民日报', '12345678', 'kf@people.cn', '2025-03-23 11:33:53', 'http://seunewsbac.pgrm.cc/static/news-images/20250507163539485_be757a3f.jpg', 'TRUE', '人民日报', NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (11, '人民海军', '123456', 'rmhj@gov.cn', '2025-03-29 08:39:38', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (12, '东南大学', '123456', '2973817592@qq.com', '2025-03-30 13:12:36', 'http://seunews.pgrm.cc/src/assets/imges/seuLogo.png', 'TRUE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (13, 'admin', 'admin', '240322218@cxxy.seu.edu.cn', '2025-03-31 09:16:03', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (24, 'zsqgle', 'Zsqgle@', '2473228344@qq.com', '2025-04-17 21:40:18', 'http://seunews.pgrm.cc/src/assets/imges/seuLogo.png', 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (25, 'AI', 'fvqwekiurhfnieluwcnhrfciqewyvrbfkjewgfvcbikewuyriuvecnw', 'weniufyvewrir@oiewyuvcrtneio.wlcriqqhewloircxe', '2025-04-19 15:42:04', NULL, 'FALSE', NULL, NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (26, '123456', '123456', 'dsrja26@126.com', '2025-04-20 16:29:41', 'http://seunewsbac.pgrm.cc/static/news-images/20250508171623392_f031bb8a.png', 'FALSE', '', NULL, NULL);
-INSERT INTO `users`(`user_id`, `user_name`, `password`, `email`, `register_date`, `avatar`, `is_author`, `name`, `phone`, `birthday`) VALUES (27, 'paidaxing', 'haimianbaobao', '1307522364@qq.com', '2025-05-08 06:02:44', NULL, 'FALSE', NULL, NULL, NULL);
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : JavaNews
+ Source Server Type    : MySQL
+ Source Server Version : 80037
+ Source Host           : localhost:3306
+ Source Schema         : seunews
+
+ Target Server Type    : MySQL
+ Target Server Version : 80037
+ File Encoding         : 65001
+
+ Date: 18/05/2025 14:29:45
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`  (
+  `user_id` int(0) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户名',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `register_date` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '注册时间',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
+  `is_author` enum('TRUE','FALSE','ADMIN') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'FALSE' COMMENT '作者标识',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '姓名',
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '手机号',
+  `birthday` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `last_operator_id` int(0) NULL DEFAULT NULL COMMENT '最后操作者',
+  `is_deleted` int(0) NOT NULL DEFAULT 0 COMMENT '删除标志',
+  PRIMARY KEY (`user_id`) USING BTREE,
+  UNIQUE INDEX `Username`(`user_name`) USING BTREE,
+  UNIQUE INDEX `Email`(`email`) USING BTREE,
+  INDEX `fk_opter_id`(`last_operator_id`) USING BTREE,
+  CONSTRAINT `fk_opter_id` FOREIGN KEY (`last_operator_id`) REFERENCES `users` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

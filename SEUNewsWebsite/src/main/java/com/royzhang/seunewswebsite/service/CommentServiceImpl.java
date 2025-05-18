@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO createComment(CommentDTO commentDTO) {
-        // 将 DTO 转换为实体
+        commentDTO.setIsDeleted(0);
         Comment comment = modelMapper.map(commentDTO, Comment.class);
         // 保存评论实体到数据库
         Comment savedComment = commentRepository.save(comment);
@@ -81,5 +81,28 @@ public class CommentServiceImpl implements CommentService {
             return modelMapper.map(updatedComment, CommentDTO.class);
         }
         return null;
+    }
+
+
+    private CommentDTO convertToDTO(Comment comment) {
+        return CommentDTO.builder()
+                .commentId(comment.getCommentId())
+                .articleId(comment.getArticleId())
+                .userId(comment.getUserId())
+                .content(comment.getContent())
+                .publishDate(comment.getPublishDate())
+                .ip(comment.getIp())
+                .isDeleted(comment.getIsDeleted())
+                .username(comment.getUser().getUsername()) // 从关联用户获取
+                .avatar(comment.getUser().getAvatar())     // 从关联用户获取
+                .build();
+    }
+
+    @Override
+    public List<CommentDTO> getCommentsByUserId(Integer userId) {
+        List<Comment> comments = commentRepository.findCommentsWithUserByUserId(userId);
+        return comments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

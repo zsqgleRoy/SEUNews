@@ -70,11 +70,11 @@
 
   // 模拟数据
   const categories = ref([
-    { path: '/news/society', name: '十四大', icon: 'src/assets/imges/14th.png' },
-    { path: '/news/politics', name: '政治', icon: 'src/assets/imges/Political.png' },
-    { path: '/news/economy', name: '经济', icon: 'src/assets/imges/Economic.png' },
-    { path: '/news/science', name: '科技', icon: 'src/assets/imges/Technology.png' },
-    { path: '/news/society', name: '社会', icon: 'src/assets/imges/social.png' },
+    { path: '/newsList/2', name: '十四大', icon: 'src/assets/imges/14th.png' },
+    { path: '/newsList/3', name: '政治', icon: 'src/assets/imges/Political.png' },
+    { path: '/newsList/5', name: '经济', icon: 'src/assets/imges/Economic.png' },
+    { path: '/newsList/4', name: '科技', icon: 'src/assets/imges/Technology.png' },
+    { path: '/newsList/6', name: '社会', icon: 'src/assets/imges/social.png' },
   ]);
 
   const videos = ref([

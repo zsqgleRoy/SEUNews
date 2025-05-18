@@ -131,6 +131,18 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+    @GetMapping("/listByTagId")
+    public ResponseEntity<Page<ArticleDTO>> getNewsListByTagId(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam Article.ArticleStatus status,
+            @RequestParam int tag
+    ) {
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(page - 1, pageSize);
+        Page<ArticleDTO> articles = articleService.selectAllArticlesByTagId(status, 0, pageable, tag);
+        return ResponseEntity.ok(articles);
+    }
+
     @GetMapping("/deletedList")
     public ResponseEntity<Page<ArticleDTO>> getDeletedNewsList(
             @RequestParam int page,
@@ -176,6 +188,7 @@ public class ArticleController {
     @PostMapping("/publish")
     public ResponseEntity<String> publishArticle(@RequestBody ArticleInsertDTO articleInsertDTO) {
         try {
+
             articleInsertDTO.setAuthorId(userService.findUserIdByUsername(articleInsertDTO.getAuthor()));
             if (articleService.saveArticle(articleInsertDTO)) {
                 return new ResponseEntity<>("OK", HttpStatus.OK);
@@ -187,12 +200,13 @@ public class ArticleController {
             return new ResponseEntity<>("新闻保存失败，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      * 发布文章
      * @param articleUpdateDTO 文章插入DTO
      * @return 响应信息
      */
-    @PutMapping("/update{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<String> updateArticle(@PathVariable int id, @RequestBody ArticleUpdateDTO articleUpdateDTO) {
         try {
             if (articleService.updateArticle(id, articleUpdateDTO)) {
@@ -201,8 +215,7 @@ public class ArticleController {
                 return new ResponseEntity<>("新闻保存失败，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            // 这里可以添加日志记录，例如：log.error("保存文章失败", e);
-            return new ResponseEntity<>("新闻保存失败，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/article-Share/{article_id}")

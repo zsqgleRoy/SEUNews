@@ -1,5 +1,8 @@
 package com.royzhang.seunewswebsite.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
     UNPAID("未支付"),
     PAID("已支付"),
@@ -11,7 +14,4 @@ public enum OrderStatus {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

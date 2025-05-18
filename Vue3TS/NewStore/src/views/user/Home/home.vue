@@ -32,7 +32,6 @@
                 </div>
             </div>
         </div>
-        <!-- 共用区域 -->
         <div class="section">
             <div class="tab-buttons">
                 <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">动态</button>
@@ -40,7 +39,6 @@
                 <button :class="{ active: activeTab === 'collections' }" @click="activeTab = 'collections'">收藏</button>
             </div>
             <div class="subsection">
-                <!-- 个人动态内容 -->
                 <div v-if="activeTab === 'activities'">
                     <div class="inner-tab-buttons">
                         <button :class="{ active: innerActiveTab === 'articles' }" @click="innerActiveTab = 'articles'">文章</button>
@@ -64,27 +62,87 @@
                         </router-link>
                         </li>
                     </ul>
-                    <ul v-if="innerActiveTab === 'comments'">
-                        <li v-if="comments.length === 0">暂无</li>
-                        <li v-for="comment in comments" :key="comment.id">
-                            {{ comment.content }} - {{ comment.time }}
+
+                    <div class="likes-container">
+                        <ul v-if="innerActiveTab === 'comments'">
+                        <template v-if="comments.length > 0">
+                            <li 
+                            v-for="comment in comments" 
+                            :key="comment.commentId"
+                            class="like-item"
+                            >
+                            <div class="content-wrapper" @click="toArticles(comment.articleId)">
+                                <span class="article-id">{{ comment.articleId }}</span>
+                                <span class="like-date">{{ formatDate(comment.publishDate) }}</span>
+                            </div>
+                            <el-button
+                                type="danger" 
+                                :icon="Delete"
+                                circle
+                                class="delete-btn"
+                                @click.stop="deleteComment(comment.commentId)"
+                            />
+                            </li>
+                        </template>
+                        <li v-else class="empty-tip">
+                            暂无评论记录
                         </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="likes-container">
+                    <ul v-if="activeTab === 'likes'">
+                    <template v-if="likes.length > 0">
+                        <li 
+                        v-for="like in likes" 
+                        :key="like.articleId"
+                        class="like-item"
+                        >
+                        <div class="content-wrapper" @click="toArticles(like.articleId)">
+                            <span class="article-id">{{ like.articleId }}</span>
+                            <span class="like-date">{{ formatDate(like.likeDate) }}</span>
+                        </div>
+                        <el-button
+                            type="danger" 
+                            :icon="Delete"
+                            circle
+                            class="delete-btn"
+                            @click.stop="deleteLike(like.articleId)"
+                        />
+                        </li>
+                    </template>
+                    <li v-else class="empty-tip">
+                        暂无点赞记录
+                    </li>
                     </ul>
                 </div>
-                <!-- 点赞内容 -->
-                <ul v-if="activeTab === 'likes'">
-                    <li v-if="likes.length === 0">暂无</li>
-                    <li v-for="like in likes" :key="like.id">
-                        {{ like.content }} - {{ like.time }}
+
+                <div class="likes-container">
+                    <ul v-if="activeTab === 'collections'">
+                    <template v-if="collections.length > 0">
+                        <li 
+                        v-for="collection in collections" 
+                        :key="collection.articleId"
+                        class="like-item"
+                        >
+                        <div class="content-wrapper" @click="toArticles(collection.articleId)">
+                            <span class="article-id">{{ collection.articleId }}</span>
+                            <span class="like-date">{{ formatDate(collection.favoriteDate) }}</span>
+                        </div>
+                        <el-button
+                            type="danger" 
+                            :icon="Delete"
+                            circle
+                            class="delete-btn"
+                            @click.stop="deleteCollection(collection.articleId)"
+                        />
+                        </li>
+                    </template>
+                    <li v-else class="empty-tip">
+                        暂无收藏记录
                     </li>
-                </ul>
-                <!-- 收藏内容 -->
-                <ul v-if="activeTab === 'collections'">
-                    <li v-if="collections.length === 0">暂无</li>
-                    <li v-for="collection in collections" :key="collection.id">
-                        {{ collection.title }} - {{ collection.time }}
-                    </li>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -100,7 +158,9 @@ import userCache, {type UserInfo} from '@/cache/userCache';
 import { type ArticleFontDTO } from "@/types/article"
 import axios from 'axios';
 import { initialURL } from '@/lib/urls';
-import {formatDate} from "@/utils/format"
+import { formatDate } from "@/utils/format"
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { Delete } from '@element-plus/icons-vue'
 const router = useRouter();
 const handleEditProfile = () => {
     user.value.email
@@ -126,13 +186,22 @@ const handleLogout = () => {
 // 个人动态
 const activities = ref<{ id: number; content: string; time: string }[]>([]);
 // 我的评论
-const comments = ref<{ id: number; content: string; time: string }[]>([]);
+const comments = ref<{
+    commentId: number;
+    content: string;
+    publishDate: string;
+    articleId:number;
+}[]>([]);
 // 我的文章
 const articles = ref<ArticleFontDTO[]>([]);
 // 点赞
-const likes = ref<{ id: number; content: string; time: string }[]>([]);
+const likes = ref<{ userId: number; articleId: number; likeDate: string }[]>([]);
 // 收藏
-const collections = ref<{ id: number; title: string; time: string }[]>([]);
+const collections = ref<{
+    userId: number;
+    articleId:number;
+    favoriteDate: string;
+}[]>([]);
 
 // 当前激活的主标签
 const activeTab = ref('activities');
@@ -144,12 +213,77 @@ const handleSettings = () => {
     console.log('设置');
 };
 
+const deleteLike = async (id:number) => {
+    await ElMessageBox.confirm(`确认删除该点赞吗？`, '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    const result = await axios.delete(`${initialURL.SERVER_URL}/api/article-likes/user/${userCache.getUserCache()?.user_id}/article/${id}`);
+    await loadLikes()
+    ElMessage.success("取消点赞成功");
+}
+
+const deleteCollection = async (id:number) => {
+    await ElMessageBox.confirm(`确认删除该收藏吗？`, '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    const result = await axios.delete(`${initialURL.SERVER_URL}/api/article-favorites/user/${userCache.getUserCache()?.user_id}/article/${id}`);
+    await loadCollections()
+    ElMessage.success("取消收藏成功");
+}
+
+const deleteComment = async (id:number) => {
+    await ElMessageBox.confirm(`确认删除该评论吗？`, '提示', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    const result = await axios.delete(`${initialURL.SERVER_URL}/api/comments/${id}`);
+    await loadCommment()
+    ElMessage.success("取消评论成功");
+}
+
+const toArticles = async (id:number) => {
+    console.log(id)
+    router.push(`/news/${id}`)
+}
+
 const loadArticles = async () => {
   try {
     const result = await axios.get(`${initialURL.SERVER_URL}/api/articles/getArticles/${userCache.getUserCache()?.user_id}`);
     articles.value = result.data;
   } catch (error) {
     console.error('获取文章列表失败:', error);
+  }
+}
+
+const loadLikes = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/article-likes/${userCache.getUserCache()?.user_id}`);
+    likes.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取点赞列表失败:' + error);
+  }
+}
+
+const loadCollections = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/article-favorites/user/${userCache.getUserCache()?.user_id}`);
+    collections.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取收藏列表失败:' + error);
+  }
+}
+
+const loadCommment = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/comments/userId/${userCache.getUserCache()?.user_id}`);
+    comments.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取评论列表失败:' + error);
   }
 }
 
@@ -161,8 +295,11 @@ const handleResize = () => {
 };
 
 const info : UserInfo | null = userCache.getUserCache();
-onMounted(() => {
+onMounted(() => { 
     loadArticles();
+    loadLikes();
+    loadCommment();
+    loadCollections();
     window.addEventListener('resize', handleResize);
     // 可以在这里处理数据加载完成后的逻辑
 });
@@ -175,6 +312,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .personal-center {
+    user-select: none;
     background: linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%);
     font-family: 'Inter', system-ui, sans-serif;
     min-height: 100vh;
@@ -189,6 +327,61 @@ onBeforeUnmount(() => {
     border: 1px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     padding: 10px;
+}
+
+.likes-container {
+  padding: 12px;
+}
+
+.like-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.like-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.content-wrapper {
+  flex: 1;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.article-id {
+  font-weight: 500;
+  color: #409eff;
+}
+
+.like-date {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.delete-btn {
+  margin-left: auto;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}
+
+.empty-tip {
+  text-align: center;
+  color: #999;
+  padding: 20px;
 }
 
 .top-menu h1 {

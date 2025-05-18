@@ -1,11 +1,9 @@
 <template>
+  <div class="top-menu" v-if="isMobile">
+      <BackButton />
+      <h1>新闻列表</h1>
+  </div>
     <div class="news-list-container">
-        <!-- 顶部菜单，仅在手机模式显示 -->
-        <div class="top-menu" v-if="isMobile">
-            <BackButton />
-            <h1>新闻列表</h1>
-        </div>
-        <!-- 操作按钮组 -->
         <div class="button-group">
             <el-button type="danger" @click="handleDeleteSelected" :disabled="selectedNews.length === 0">
                 <el-icon>
@@ -28,23 +26,40 @@
             border
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="title" label="标题">
+            <el-table-column prop="title" label="标题"  width="250">
                 <template #default="scope">
                     <div class="single-line-title">{{ scope.row.title }}</div>
                 </template>
             </el-table-column>
-            <el-table-column label="发布日期">
+            <el-table-column label="发布日期" width="100">
                 <template #default="scope">
                     {{ formatDate(scope.row.publishDate) }}
                 </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column label="标签">
+              <template #default="scope">
+                  <div class="tags-wrapper">
+                      <template v-if="scope.row.tags?.length">
+                          <el-tag
+                              v-for="(tag, index) in scope.row.tags"
+                              :type="tagType(tag.tagId)"
+                              :key="index"
+                              size="small"
+                              class="tag-item"
+                          >
+                              {{ tag.label }}
+                          </el-tag>
+                      </template>
+                      <el-tag v-else type="info" size="small">无标签</el-tag>
+                  </div>
+              </template>
+          </el-table-column>
+            <el-table-column label="状态" width="80">
                 <template #default="scope">
                     {{ formatStatus(scope.row.status) }}
                 </template>
             </el-table-column>
         </el-table>
-        <!-- 分页组件 -->
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -64,7 +79,7 @@ import { getNewsList, ArticleStatus, type SaveData, getDeletedNewsList } from '@
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import { deleteNewsByIds } from '@/api/news';
-import { formatDate, formatStatus } from "@/utils/format";
+import { formatDate, formatStatus, formatTags } from "@/utils/format";
 import BackButton from '@/components/common/BackButton.vue';
 import { Delete } from '@element-plus/icons-vue';
 import useCache from '@/cache/userCache';
@@ -174,6 +189,11 @@ const handleDeleteSelected = async () => {
     }
 };
 
+const tagType = (category : any) => {
+    const types = [ 'success', 'warning', 'danger', 'primary']
+    return types[category % types.length]
+}
+
 // 每页显示数量变化时重新获取新闻列表
 const handleSizeChange = (newSize: number) => {
     pageSize.value = newSize;
@@ -188,6 +208,27 @@ const handleCurrentChange = (newPage: number) => {
 </script>
 
 <style scoped lang="scss">
+  .top-menu {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    margin-bottom: 15px;
+
+    h1 {
+      margin: 0 auto;
+      color: transparent;
+      background: linear-gradient(135deg, #0055ff, #6b00bc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      border-image: linear-gradient(135deg, #0055ff, #6b00bc) 1;
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+  }
   .news-list-container {
     user-select: none;
     padding: 4%;
@@ -243,28 +284,6 @@ const handleCurrentChange = (newPage: number) => {
       align-items: center;
     }
   
-    .top-menu {
-      display: flex;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      padding: 10px;
-      margin-bottom: 15px;
-  
-      h1 {
-        margin: 0 auto;
-        color: transparent;
-        background: linear-gradient(135deg, #0055ff, #6b00bc);
-        -webkit-background-clip: text;
-        background-clip: text;
-        border-image: linear-gradient(135deg, #0055ff, #6b00bc) 1;
-        text-transform: uppercase;
-        font-size: 18px;
-      }
-    }
-  
     .single-line-title {
       white-space: nowrap;
       overflow: hidden;
@@ -312,4 +331,15 @@ const handleCurrentChange = (newPage: number) => {
       }
     }
   }
-  </style>
+
+  .tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tag-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+</style>

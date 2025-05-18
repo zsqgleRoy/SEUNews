@@ -19,7 +19,5 @@ public class UserDTO {
     private String phone;
     private String name;
     private String birthday;
-
-    // 构造函数、Getter 和 Setter
-
+    private Integer isDeleted;
 }

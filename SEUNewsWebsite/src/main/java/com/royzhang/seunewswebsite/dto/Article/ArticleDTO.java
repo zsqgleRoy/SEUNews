@@ -3,11 +3,12 @@ package com.royzhang.seunewswebsite.dto.Article;
 import com.royzhang.seunewswebsite.dto.user.UserDTO;
 import com.royzhang.seunewswebsite.entity.Article;
 import com.royzhang.seunewswebsite.entity.Article.ArticleStatus;
+import com.royzhang.seunewswebsite.entity.Tag;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -21,12 +22,14 @@ public class ArticleDTO {
     private Integer authorId;
     private ArticleStatus status;
     private String headImageUrl;
+    private Set<Tag> tags;
     private List<MediaDTO> medias;
     private String avatar;
     private long likes;
     private long coin;
     private long favourite;
     private long share;
+    private Integer isDeleted;
 
     public ArticleDTO() {}
 
@@ -43,6 +46,8 @@ public class ArticleDTO {
         this.coin = article.getCoinNum();
         this.favourite = article.getFavoritNum();
         this.share = article.getShareNum();
+        System.out.println(article.getTags().getClass());
+        this.tags = article.getTags() != null ? article.getTags() : Collections.emptySet();
     }
     public ArticleDTO(Article article, UserDTO author) {
         this.article_id = article.getArticleId();
@@ -59,6 +64,7 @@ public class ArticleDTO {
         this.coin = article.getCoinNum();
         this.favourite = article.getFavoritNum();
         this.share = article.getShareNum();
+        this.tags = article.getTags() != null ? article.getTags() : Collections.emptySet();
     }
 
 }

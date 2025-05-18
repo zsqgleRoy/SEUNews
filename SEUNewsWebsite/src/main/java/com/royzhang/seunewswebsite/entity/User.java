@@ -28,6 +28,12 @@ public class User {
     @Column(name = "register_date")
     private Date registerDate;
 
+    @Column(name = "last_operator_id")
+    private Integer lastOperatorId;
+
+    @Column(name = "is_deleted")
+    private Integer isDeleted;
+
     /**
      * 头像
     */

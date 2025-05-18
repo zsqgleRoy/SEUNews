@@ -39,4 +39,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
         ORDER BY c.publish_date DESC
         """, nativeQuery = true)
     List<Object[]> findFullCommentsByArticleId(@Param("articleId") Integer articleId);
+
+    @Query("SELECT c FROM Comment c JOIN FETCH c.user WHERE c.userId = :userId")
+    List<Comment> findCommentsWithUserByUserId(@Param("userId") Integer userId);
 }

@@ -22,6 +22,12 @@ public class ArticleLikeController {
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ArticleLikeDTO>> getAllLikesByUserId(@PathVariable Integer userId) {
+        List<ArticleLikeDTO> likes = articleLikeService.getAllLikesByUserId(userId);
+        return new ResponseEntity<>(likes, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<ArticleLikeDTO> createLike(@RequestBody ArticleLikeDTO likeDTO) {
         ArticleLikeDTO createdLike = articleLikeService.createLike(likeDTO);

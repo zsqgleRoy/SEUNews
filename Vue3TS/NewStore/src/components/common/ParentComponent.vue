@@ -1,26 +1,19 @@
 <template>
   <div class="panel">
-    <!-- 新增流光装饰 -->
     <div class="glow-effect"></div>
-    
-    <!-- 顶部装饰 -->
     <div class="decorative-border top">
       <div class="gold-line"></div>
       <div class="diamond"></div>
       <div class="gold-line"></div>
     </div>
 
-    <!-- 内容区域 -->
     <div class="title-container">
-      <!-- 左侧装饰线 -->
       <svg class="title-deco left" viewBox="0 0 100 10">
         <path d="M0 5 Q25 0 50 5 T100 5" 
               stroke="rgba(255,215,0,0.3)" 
               fill="none"
               stroke-width="0.5"/>
       </svg>
-      
-      <!-- 标题内容 -->
       <h2 class="main-title">
         <svg class="crown-icon" viewBox="0 0 24 24">
           <path fill="#ffd700" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3H5v2h14v-2z"/>
@@ -43,7 +36,6 @@
       <div class="options-container">
         <MembershipDurationSelect ref="durationRef" @duration-change="onDurationChange" />
       </div>
-      <!-- 支付方式容器放在下面 -->
       <div class="payment-container">
         <PayMenu v-if="timeLong" :data="timeLong" />
       </div>
@@ -65,14 +57,11 @@ import PayMenu from "./pay.vue"
 const timeLong = ref(1);
 const durationRef = ref<InstanceType<typeof MembershipDurationSelect>>();
 
-// 初始化时生成默认二维码
 onMounted(() => {
-  if (durationRef.value) {
 
-  }
 });
 const onDurationChange = ()=>{
-  timeLong.value = durationRef.value?.selectedDuration || 1;
+  timeLong.value = durationRef.value || 1;
 }
 
 </script>

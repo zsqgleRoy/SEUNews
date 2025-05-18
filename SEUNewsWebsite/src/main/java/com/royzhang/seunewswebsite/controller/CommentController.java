@@ -22,6 +22,12 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<List<CommentDTO>> getCommentsByUserId(@PathVariable Integer userId) {
+        List<CommentDTO> comments = commentService.getCommentsByUserId(userId);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
         CommentDTO createdComment = commentService.createComment(commentDTO);

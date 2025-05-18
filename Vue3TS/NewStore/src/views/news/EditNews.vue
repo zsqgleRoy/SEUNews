@@ -27,7 +27,7 @@ const news = ref({
     content: '',
     author: '',
     status: 'DRAFT',
-    tag: 0,
+    tags: [],
     headImageUrl: ''
 });
 const newsId = Number(route.params.id);

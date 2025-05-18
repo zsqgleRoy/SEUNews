@@ -18,4 +18,6 @@ public interface CommentService {
 
     // 更新评论
     CommentDTO updateComment(Integer commentId, CommentDTO commentDTO);
+
+    List<CommentDTO> getCommentsByUserId(Integer userId);
 }

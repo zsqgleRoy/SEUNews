@@ -43,5 +43,8 @@ export const formatStatus = (status: ArticleStatus) : String =>{
     if(status === ArticleStatus.PUBLISH)
         return "已发布";
     else
-        return "编辑中";
+        return "未发布";
+};
+export const formatTags = (tags?: Array<{ label: string }>) => {
+  return tags?.map(t => t.label).join(', ') || '';
 };

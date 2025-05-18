@@ -3,7 +3,6 @@
     <template v-if="isDesktop">
       <LongBanner />
       <div class="main-layout">
-        <!-- 可收起菜单容器 -->
         <div 
           class="menu-wrapper"
           :style="{ width: menuWidth }"

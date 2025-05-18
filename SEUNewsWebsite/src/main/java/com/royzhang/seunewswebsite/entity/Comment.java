@@ -31,6 +31,9 @@ public class Comment {
     @Column(name = "ip")
     private String ip;
 
+    @Column(name = "is_deleted")
+    private Integer isDeleted;
+
     // 添加实体关联（推荐）
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

@@ -17,7 +17,8 @@ public class ArticleInsertDTO {
     private String author;
     private Integer authorId;
     private ArticleStatus status;
-    private Integer tag;
+    private Integer isDeleted;
+    private Integer[] tags;
     private String headImageUrl;
 
     public ArticleInsertDTO() {}

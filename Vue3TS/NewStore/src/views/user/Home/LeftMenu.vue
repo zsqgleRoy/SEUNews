@@ -92,7 +92,6 @@ import { useUserStore } from '@/store/userStore';
 import MembershipEntry from './MembershipEntry.vue'
 import { Paperclip, Management, ChromeFilled, List, Message, HomeFilled, Service, User, Files, Document, ArrowRight, ArrowDown, Phone, Link, Plus } from '@element-plus/icons-vue';
 import { ElMessage } from "element-plus";
-import useCache from "@/cache/userCache";
 const info = shallowRef<UserInfo | null>(userCache.getUserCache());
 const route = useRoute();
 const emits = defineEmits(['menuItemClick']);
@@ -215,28 +214,14 @@ const routes = ref(computed(() => !isAuthor.value ?
       isPhone: false
     }
   },
-  {
-    name: '用户管理',
-    icon: Management,
-    children: [
-      { path: '/addUser', name: '添加用户', icon: Plus,
+  ...(info.value?.user_id===2 ? [{
+        path: '/userManage', name: '用户管理',
+        icon: List,
         meta:{
           isExternal: false,
           isPhone: false
         } 
-      },
-      { path: '/userManage', name: '用户列表', icon: List,
-          meta:{
-          isExternal: false,
-          isPhone: false
-        } 
-      },
-    ],
-    meta:{
-      isExternal: false,
-      isPhone: false
-    }
-  },
+      }] : []),
   {
     path: '/contact',
     name: '联系我们',

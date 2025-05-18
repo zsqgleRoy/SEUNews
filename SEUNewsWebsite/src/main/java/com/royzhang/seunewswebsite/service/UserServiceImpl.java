@@ -6,12 +6,16 @@ import com.royzhang.seunewswebsite.entity.User;
 import com.royzhang.seunewswebsite.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -46,9 +50,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        // 验证用户名是否已存在
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new ResponseStatusException(CONFLICT, "用户名已存在");
+        }
+
+        // 验证邮箱是否已存在
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new ResponseStatusException(CONFLICT, "邮箱已被注册");
+        }
+
+        // 转换DTO到实体
         User user = modelMapper.map(userDTO, User.class);
-        User savedUser = userRepository.save(user);
-        return modelMapper.map(savedUser, UserDTO.class);
+
+        try {
+            // 保存用户
+            User savedUser = userRepository.save(user);
+            // 转换实体到DTO
+            return modelMapper.map(savedUser, UserDTO.class);
+        } catch (DataIntegrityViolationException e) {
+            // 处理数据库约束异常
+            throw new ResponseStatusException(BAD_REQUEST, "无效的用户数据", e);
+        } catch (Exception e) {
+            // 处理其他异常
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "创建用户失败", e);
+        }
     }
 
     @Override
@@ -73,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
+        userRepository.deleteByIds(id);
     }
 
     @Override

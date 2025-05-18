@@ -1,7 +1,10 @@
 <template>
     <div class="block block-hot">
         <!-- 标题 -->
-        <h2 class="section-title">最新新闻</h2>
+        <h2 class="section-title">
+            最新新闻
+            <More :tagId="1"></More>
+        </h2>
         <!-- 加载状态提示 -->
         <div v-if="isLoading" class="loading">加载中...</div>
         <!-- 错误提示 -->
@@ -25,6 +28,7 @@ import { onMounted, ref } from 'vue';
 import { getNewsList as apiGetNewsList, ArticleStatus } from "@/api/news";
 import { formatDate } from '@/utils/format';
 import newsCache from '@/cache/newsCache';
+import More from "@/components/common/button/More.vue"
 
 // 加载状态
 const isLoading = ref(true);

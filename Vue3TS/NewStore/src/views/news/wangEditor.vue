@@ -31,9 +31,15 @@
               <option value="DRAFT">草稿</option>
               <option value="PUBLISHED">已发布</option>
             </select>
-            <select v-model="selectedMenu" class="menu-select">
-              <option v-for="menu in menuItems" :key="menu.tag_id" :value="menu.tag_id">{{ menu.label }}</option>
-            </select>
+            <label v-for="menu in menuItems" :key="menu.tagId" class="tag-option">
+              <input 
+                type="checkbox" 
+                :value="menu.tagId" 
+                v-model="selectedMenus"
+                class="tag-checkbox"
+              >
+              <span>{{ menu.label }}</span>
+            </label>
           </div>
         </div>
         <div class="form-item">
@@ -88,6 +94,7 @@ type InsertFnType = (
 export default {
   components: { Editor, Toolbar, apiUploadHeadImage },
   setup() {
+    const selectedMenus = ref([]);
     const router = useRouter();
     const newsTitle = ref('');
     const now = new Date();
@@ -104,13 +111,12 @@ export default {
 
     // 菜单相关变量
     const menuItems = ref<string[]>([]);
-    const selectedMenu = ref(1);
     onMounted(async () => {
       const cacheKey = menuCache.generateCacheKey();
       const cachedMenu = menuCache.getCache(cacheKey);
       if (cachedMenu) {
-        menuItems.value = cachedMenu.map((item: { tag_id: any; label: any; }) => ({
-          tag_id: item.tag_id,
+        menuItems.value = cachedMenu.map((item: { tagId: any; label: any; }) => ({
+          tagId: item.tagId,
           label: item.label
         }));
       } else {
@@ -130,7 +136,6 @@ export default {
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
       const formattedTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-      // 将格式化后的时间赋值给 newsTime
       newsTime.value = formattedTime;
     });
 
@@ -144,7 +149,6 @@ export default {
                 headers: {
                     Authorization: `1` // 从本地存储获取token
                 },
-                // 自定义插入图片处理
                 customInsert(res: any, insertFn: InsertFnType) {
                     if (res.code !== 200) {
                         console.error('上传失败:', res.msg)
@@ -196,7 +200,8 @@ export default {
           articleStatus.value &&
           headImgUrl.value &&
           valueHtml.value &&
-          selectedMenu.value)
+          selectedMenus.value
+        )
       ) {
           ElMessage.error("新闻信息不完整，请您重试！");
           return;
@@ -208,11 +213,14 @@ export default {
           content: valueHtml.value,
           author: userInfo.value?.username,
           status: articleStatus.value,
-          tag: selectedMenu.value,
-          headImageUrl: headImgUrl.value
+          tags: selectedMenus.value,
+          headImageUrl: headImgUrl.value,
+          isDeleted: 0
       };
       try {
           await publishNews(data);
+          ElMessage.success("发布成功");
+          router.push("/newsManage");
       } catch (error) {
           console.error('保存新闻时出错:', error);
       }
@@ -248,10 +256,11 @@ export default {
     })
 
     const handleCreated = (editor: any) => {
-        editorRef.value = editor // 记录 editor 实例，重要！
+        editorRef.value = editor
     }
 
     return {
+        selectedMenus,
         newsTitle,
         newsTime,
         editorRef,
@@ -263,8 +272,7 @@ export default {
         handleCreated,
         saveNews,
         reviewParam,
-        menuItems,
-        selectedMenu
+        menuItems
       }
   },
 }
@@ -476,6 +484,3 @@ option {
   }
 }
 </style>
-
-
-

@@ -64,6 +64,8 @@ public interface ArticleService {
      */
     Page<ArticleDTO> selectAllArticles(Article.ArticleStatus status, Integer isDelete, Pageable pageable);
 
+    Page<ArticleDTO> selectAllArticlesByTagId(Article.ArticleStatus status, Integer isDelete, Pageable pageable, Integer tagId);
+
     /**
      * 保存文章信息。
      *

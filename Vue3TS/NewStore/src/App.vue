@@ -5,8 +5,7 @@
       <Header></Header>
     </el-affix>
     <navbar v-if="isShow" />
-    <Menu v-else-if="!is404" @menuItemClick="handleMenuItemClick" />
-    <!-- 首页主图，仅在 Home 路由时显示 -->
+    <Menu v-else-if="!is404" @menuItemClick="handleMenuItemClick" ></Menu>
     <MainImg v-if="isMain"></MainImg>
     <!-- 路由视图容器，在显示头部或 404 页面时显示 -->
     <div class="view" v-if="isShow || is404">
@@ -43,7 +42,8 @@ const row = ref(0);
 const excludeRoutes = new Set([
   'AddNews', 'myHome', 'index',
   'VIP', 'NewsManage', 'EditNews',
-  'Service','ModifyUserData'
+  'Service','ModifyUserData', 'addUser',
+  'userManage'
 ]);
 // 定义不需要显示 Footer 的路由名称
 const noFootRoutes = new Set([

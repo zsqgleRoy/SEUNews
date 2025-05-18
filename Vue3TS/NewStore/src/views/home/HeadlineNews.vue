@@ -1,6 +1,9 @@
 <template>
     <div v-if="!isLoading" class="block block-headline">
-      <h2 class="section-title">头条新闻</h2>
+      <h2 class="section-title">
+        头条新闻
+        <More :tagId="1"></More>
+      </h2>
       <div class="news-list">
         <div class="news-item" v-for="(item, index) in sliderNewsList" :key="index">
           <router-link :to="`/news/${item.article_id}`" class="news-link">
@@ -20,17 +23,20 @@
 <script lang="ts" setup>
   import { formatDate } from '@/utils/format';
   import { onUnmounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import More from "@/components/common/button/More.vue"
   interface NewsItem {
     article_id: string;
     headImageUrl: string;
     title: string;
     publishDate: string;
   }
-  
+  const router = useRouter();
   const props = defineProps<{
     isLoading: boolean;
     sliderNewsList: NewsItem[];
   }>();
+
   onUnmounted(() => {
     
   });
@@ -50,7 +56,7 @@
     transform: translateY(-5px);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
   }
-  
+
   .section-title {
     color: transparent;
     font-size: 1.8rem;

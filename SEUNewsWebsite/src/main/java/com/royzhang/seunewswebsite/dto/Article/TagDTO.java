@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TagDTO {
-    private Integer tag_id;
+    private Integer tagId;
     private String label;
     private String path;
 

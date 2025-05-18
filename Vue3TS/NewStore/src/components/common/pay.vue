@@ -93,7 +93,7 @@ const handlePay = async () => {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-        const response = await axios.post(`${initialURL.SERVER_URL}/api/pay/alipay`, { uid: userCache.getUserCache()?.user_id,amount: props.data });
+        const response = await axios.post(`${initialURL.SERVER_URL}/api/pay/alipay`, { uid: userCache.getUserCache()?.user_id, amount: props.data });
         const payFormHtml = response.data;
 
         const parser = new DOMParser();

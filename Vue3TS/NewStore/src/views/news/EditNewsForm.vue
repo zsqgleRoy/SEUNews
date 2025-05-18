@@ -31,9 +31,15 @@
                 <option value="DRAFT">草稿</option>
                 <option value="PUBLISHED">已发布</option>
               </select>
-              <select v-model="selectedMenu" class="menu-select">
-                <option v-for="menu in menuItems" :key="menu.tag_id" :value="menu.tag_id">{{ menu.label }}</option>
-              </select>
+            <label v-for="menu in menuItems" :key="menu.tagId" class="tag-option">
+              <input 
+                type="checkbox" 
+                :value="menu.tagId" 
+                v-model="selectedMenus"
+                class="tag-checkbox"
+              >
+              <span>{{ menu.label }}</span>
+            </label>
             </div>
           </div>
           <div class="form-item">
@@ -109,20 +115,26 @@
       const headImgUrl = ref('')
       // 编辑器实例，必须用 shallowRef
       const editorRef = shallowRef<IDomEditor | null>(null)
-      // 内容 HTML
       const valueHtml = ref()
-      // 创建计算属性
       const userInfo = ref(userCache.getUserCache());
-  
-      // 菜单相关变量
-      const menuItems = ref<string[]>([]);
-      const selectedMenu = ref(1);
+      const menuItems = ref<object[]>([]);
+      const tagIds = ref();
+      const initialSelection = ref();
+      const selectedMenus = computed<number[]>({
+        get() {
+          return Array.from(initialSelection.value) as number[];
+        },
+        set(value: number[]) {
+          initialSelection.value = new Set(value);
+        }
+      })
+
       onMounted(async () => {
         const cacheKey = menuCache.generateCacheKey();
         const cachedMenu = menuCache.getCache(cacheKey);
         if (cachedMenu) {
-          menuItems.value = cachedMenu.map((item: { tag_id: any; label: any; }) => ({
-            tag_id: item.tag_id,
+          menuItems.value = cachedMenu.map((item: { tagId: any; label: any; }) => ({
+            tagId: item.tagId || item.tagId,
             label: item.label
           }));
         } else {
@@ -134,7 +146,6 @@
           } catch (err: any) {
           }
         }
-  
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
@@ -201,8 +212,9 @@
             articleStatus.value = newVal.status;
             valueHtml.value = newVal.content;
             headImgUrl.value = newVal.headImageUrl;
-            selectedMenu.value = newVal.tag || 1;
             newsId.value = newVal.id || 0;
+            tagIds.value = news.value.tags.map((tag: { tagId: any; }) => tag.tagId);
+            initialSelection.value = new Set<number>(tagIds.value);
             // 确保编辑器内容更新
             nextTick(() => {
                 if (editorRef.value && newVal.content !== editorRef.value.getHtml()) {
@@ -239,7 +251,7 @@
             articleStatus.value &&
             headImgUrl.value &&
             valueHtml.value &&
-            selectedMenu.value)
+            selectedMenus.value)
         ) {
             ElMessage.error("新闻信息不完整，请您重试！");
             return;
@@ -250,14 +262,14 @@
             updateDate: newsTime.value,
             content: valueHtml.value,
             status: articleStatus.value as ArticleStatus,
-            tag: selectedMenu.value,
+            tags: selectedMenus.value,
             headImageUrl: headImgUrl.value,
             authorId: userCache.getUserCache()?.user_id
         };
         try {
           const response = await apiUpdateNews(data)
           ElMessage.success(response?.data);
-          router.go(-1)
+          router.push("/newsManage")
 
         } catch (error) {
             console.error('保存新闻时出错:', error);
@@ -313,7 +325,7 @@
           reviewParam,
           handleHeadImageUpdate,
           menuItems,
-          selectedMenu,
+          selectedMenus,
           componentKey
         }
     },

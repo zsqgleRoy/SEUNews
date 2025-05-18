@@ -9,8 +9,9 @@ export interface SaveData {
     content: string;
     author: string;
     status: string;
-    tag: number;
+    tags: number[];
     headImageUrl: string;
+    isDeleted:number;
 }
 
 // 定义更新新闻的数据结构
@@ -20,7 +21,7 @@ export interface UpdateData {
     updateDate: string;
     content: string;
     status: ArticleStatus;
-    tag: number;
+    tags: number[];
     headImageUrl: string;
     authorId?:number;
 }
@@ -81,7 +82,7 @@ export interface NewsDetailResponse {
 
 // 统一错误处理函数
 const handleError = (error: any) => {
-    ElMessage.error('请求新闻时出错，请稍后重试！');
+    ElMessage.error(error.response.data);
     throw error;
 };
 
@@ -110,8 +111,11 @@ const makeRequest = async <T>(
 };
 
 // 获取新闻列表接口
-export const getNewsList = (params: { page: number; pageSize: number; status: ArticleStatus }) => {
+export const getNewsList = (params: { page: number; pageSize: number; status: ArticleStatus; }) => {
     return makeRequest<NewsListResponse>('get', '/api/articles/list', params);
+};
+export const getNewsListByTag = (params: { page: number; pageSize: number; status: ArticleStatus; tag: number }) => {
+    return makeRequest<NewsListResponse>('get', '/api/articles/listByTagId', params);
 };
 
 export const getDeletedNewsList = (params: { page: number; pageSize: number; }) => {
@@ -152,7 +156,7 @@ export const getNewsById = (newsId: number) => {
 
 // 更新新闻接口
 export const apiUpdateNews = (data: UpdateData) => {
-    return makeRequest<{ status: number; message: string }>('put', `/api/articles/update${data.id}`, undefined, data);
+    return makeRequest<{ status: number; message: string }>('put', `/api/articles/update/${data.id}`, undefined, data);
 };
 
 // 删除新闻接口

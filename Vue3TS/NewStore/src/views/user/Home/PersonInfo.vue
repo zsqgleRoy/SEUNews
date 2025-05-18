@@ -15,22 +15,22 @@
                 <p>邮箱 {{ user?.email || '邮箱' }}</p>
             </div>
             <div class="actions">
-                <el-button class="follow">+ 关注</el-button>
+                <el-button class="follow"> + 关注</el-button>
             </div>
         </div>
         <!-- 共用区域 -->
         <div class="section">
             <div class="tab-buttons">
                 <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">动态</button>
-                <button :class="{ active: activeTab === 'likes' }" @click="activeTab = 'likes'">点赞</button>
-                <button :class="{ active: activeTab === 'collections' }" @click="activeTab = 'collections'">收藏</button>
+                <button :class="{ active: activeTab === 'likes' }" @click="activeTab = 'likes'">点赞 {{ likes.length }}</button>
+                <button :class="{ active: activeTab === 'collections' }" @click="activeTab = 'collections'">收藏 {{ collections.length }}</button>
             </div>
             <div class="subsection">
                 <!-- 个人动态内容 -->
                 <div v-if="activeTab === 'activities'">
                     <div class="inner-tab-buttons">
-                        <button :class="{ active: innerActiveTab === 'articles' }" @click="innerActiveTab = 'articles'">文章</button>
-                        <button :class="{ active: innerActiveTab === 'comments' }" @click="innerActiveTab = 'comments'">评论</button>
+                        <button :class="{ active: innerActiveTab === 'articles' }" @click="innerActiveTab = 'articles'">文章 {{ articles.length }}</button>
+                        <button :class="{ active: innerActiveTab === 'comments' }" @click="innerActiveTab = 'comments'">评论 {{ comments.length }}</button>
                         <button :class="{ active: innerActiveTab === 'share' }" @click="innerActiveTab = 'share'">转发</button>
                     </div>
                     <ul v-if="innerActiveTab === 'articles'">
@@ -50,27 +50,52 @@
                         </router-link>
                         </li>
                     </ul>
-                    <ul v-if="innerActiveTab === 'comments'">
-                        <li v-if="comments.length === 0">暂无</li>
-                        <li v-for="comment in comments" :key="comment.id">
-                            {{ comment.content }} - {{ comment.time }}
+                    <div class="likes-container">
+                        <ul v-if="innerActiveTab === 'comments'">
+                        <template v-if="comments.length > 0">
+                            <li 
+                            v-for="comment in comments" 
+                            :key="comment.commentId"
+                            class="like-item"
+                            >
+                            <div class="content-wrapper" @click="toArticles(comment.articleId)">
+                                <span class="article-id">{{ comment.articleId }}</span>
+                                <span class="like-date">{{ formatDate(comment.publishDate) }}</span>
+                            </div>
+                            </li>
+                        </template>
+                        <li v-else class="empty-tip">
+                            暂无评论记录
                         </li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
                 <!-- 点赞内容 -->
                 <ul v-if="activeTab === 'likes'">
                     <li v-if="likes.length === 0">暂无</li>
-                    <li v-for="like in likes" :key="like.id">
-                        {{ like.content }} - {{ like.time }}
+                    <li v-for="like in likes" :key="like.articleId" @click="toArticles(like.articleId)">
+                        {{ like.articleId }} - {{ formatDate(like.likeDate) }}
                     </li>
                 </ul>
-                <!-- 收藏内容 -->
-                <ul v-if="activeTab === 'collections'">
-                    <li v-if="collections.length === 0">暂无</li>
-                    <li v-for="collection in collections" :key="collection.id">
-                        {{ collection.title }} - {{ collection.time }}
+                <div class="likes-container">
+                    <ul v-if="activeTab === 'collections'">
+                    <template v-if="collections.length > 0">
+                        <li 
+                        v-for="collection in collections" 
+                        :key="collection.articleId"
+                        class="like-item"
+                        >
+                        <div class="content-wrapper" @click="toArticles(collection.articleId)">
+                            <span class="article-id">{{ collection.articleId }}</span>
+                            <span class="like-date">{{ formatDate(collection.favoriteDate) }}</span>
+                        </div>
+                        </li>
+                    </template>
+                    <li v-else class="empty-tip">
+                        暂无收藏记录
                     </li>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -79,19 +104,21 @@
 <script lang="ts" setup>
 import BackButton from '@/components/common/BackButton.vue';
 import CertificationInfo from "@/components/common/CertificationInfo.vue"
-import { useRouter,useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { onMounted, ref, onBeforeUnmount, onActivated } from 'vue';
 import { type ArticleFontDTO } from "@/types/article"
 import axios from 'axios';
 import { initialURL } from '@/lib/urls';
-import {formatDate} from "@/utils/format"
+import { formatDate } from "@/utils/format"
 import { ElMessage } from 'element-plus';
-import UserInfo from '../UserInfo.vue';
+import { useRouter } from 'vue-router';
+import { Delete } from '@element-plus/icons-vue'
 const route = useRoute();
 // 默认头像
 const defaultAvatar = 'http://seunewsbac.pgrm.cc/static/news-images/20250313204547238_57018fd3.png';
 // 用户信息
 const user = ref({
+    id:0,
     username: '',
     avatar: '',
     email: '',
@@ -101,14 +128,23 @@ const user = ref({
 });
 
 // 我的评论
-const comments = ref<{ id: number; content: string; time: string }[]>([]);
+const comments = ref<{
+    commentId: number;
+    content: string;
+    publishDate: string;
+    articleId:number;
+}[]>([]);
 // 我的文章
 const articles = ref<ArticleFontDTO[]>([]);
 // 点赞
-const likes = ref<{ id: number; content: string; time: string }[]>([]);
+const likes = ref<{ userId: number; articleId: number; likeDate: string }[]>([]);
 // 收藏
-const collections = ref<{ id: number; title: string; time: string }[]>([]);
-
+const collections = ref<{
+    userId: number;
+    articleId:number;
+    favoriteDate: string;
+}[]>([]);
+const router = useRouter();
 // 当前激活的主标签
 const activeTab = ref('activities');
 // 当前激活的个人动态内标签
@@ -122,6 +158,38 @@ const loadArticles = async () => {
     ElMessage.error('获取文章列表失败');
   }
 }
+
+const loadLikes = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/article-likes/${user.value.id}`);
+    likes.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取点赞列表失败:' + error);
+  }
+}
+
+const toArticles = async (id:number) => {
+    router.push(`/news/${id}`)
+}
+
+const loadCommment = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/comments/userId/${user.value.id}`);
+    comments.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取评论列表失败:' + error);
+  }
+}
+
+const loadCollections = async () => {
+  try {
+    const result = await axios.get(`${initialURL.SERVER_URL}/api/article-favorites/user/${user.value.id}`);
+    collections.value = result.data;
+  } catch (error) {
+    ElMessage.error('获取收藏列表失败:' + error);
+  }
+}
+
 const loadUserInfo = async () => {
   try {
     const result = await axios.get(`${initialURL.SERVER_URL}/api/user/userInfo/${user.value.id}`);
@@ -138,7 +206,6 @@ const handleResize = () => {
 };
 onMounted(() => {
     window.addEventListener('resize', handleResize);
-    // 可以在这里处理数据加载完成后的逻辑
 });
 
 onBeforeUnmount(() => {
@@ -149,6 +216,9 @@ onActivated(()=>{
     user.value.id = Number(route.params.id);
     loadUserInfo();
     loadArticles();
+    loadLikes();
+    loadCommment();
+    loadCollections();
 })
 </script>
 
@@ -384,6 +454,27 @@ onActivated(()=>{
 .article-info p {
     font-size: 0.8rem;
     color: #64748b;
+}
+
+.likes-container {
+  padding: 12px;
+}
+
+.like-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.like-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* 新增动画效果 */

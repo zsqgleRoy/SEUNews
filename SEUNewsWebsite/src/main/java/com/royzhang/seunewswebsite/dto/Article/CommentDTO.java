@@ -18,4 +18,5 @@ public class CommentDTO {
     private String username;
     private String avatar;
     private String ip;
+    private Integer isDeleted;
 }

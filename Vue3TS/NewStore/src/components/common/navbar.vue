@@ -1,8 +1,9 @@
 <template>
   <el-scrollbar>
       <div class="scrollbar-flex-content" @click="closeMenuIfMobile">
-          <p v-for="item in menuItems" :key="item.label" class="scrollbar-demo-item">
-              <router-link :to="item.path" :class="{ 'active-link': isActiveRoute(item.path) }">
+          <p v-for="item in menuItems" :key="item.tagId" class="scrollbar-demo-item">
+              <!-- <router-link :to="item.path" :class="{ 'active-link': isActiveRoute(item.path) }"> -->
+              <router-link :to="`/newsList/${item.tagId}`" :class="{ 'active-link': isActiveRoute(item.path) }">
                   {{ item.label }}
               </router-link>
           </p>
@@ -11,10 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { getMenuItemList } from "@/api/menu";
 import menuCache from '@/cache/menuCache';
+import { ElMessage } from 'element-plus';
 
 const route = useRoute();
 const isMenuOpen = ref(false);
@@ -50,11 +52,11 @@ const fetchMenuItems = async () => {
   try {
       const response = await getMenuItemList();
       menuItems.value = response.data;
-      // 保存缓存，有效期2小时
+      console.log(response.data)
       menuCache.saveCacheData(cacheKey, response.data, 7200000);
   } catch (err: any) {
       error.value = err.message || '获取导航栏列表失败';
-      console.error('获取菜单数据失败:', err);
+      ElMessage.error('获取菜单数据失败:' + err);
   } finally {
       isLoading.value = false;
   }

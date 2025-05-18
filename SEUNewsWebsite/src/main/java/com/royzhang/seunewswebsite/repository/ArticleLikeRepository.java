@@ -39,4 +39,6 @@ public interface ArticleLikeRepository extends JpaRepository<ArticleLike, Intege
                     " a.articleId = :articleId"
     )
     void deleteByUserIdAndArticleId(Integer userId, Integer articleId);
+
+    List<ArticleLike> findByUserId(Integer userId);
 }

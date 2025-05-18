@@ -4,12 +4,12 @@ import { type RouteRecordRaw } from 'vue-router';
 // 定义新闻相关的路由配置
 const newsRoutes: RouteRecordRaw[] = [
   {
-    path: '/news',
+    path: '/newsList/:tag_id',
     name: 'NewsList',
     component: () => import('@/views/news/List.vue'),
     meta: {
       title: '新闻列表',
-      requiresAuth: false // 该路由不需要用户认证
+      requiresAuth: false
     }
   },
   {

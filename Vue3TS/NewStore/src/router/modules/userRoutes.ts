@@ -21,7 +21,17 @@ const userRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       mobileFullPage: true
     }
-  },  
+  },
+  {
+    path:"/userManage",
+    name:"userManage",
+    component:()=>import("@/views/user/Management/UserManagement.vue"),
+    meta:{
+      title:"用户列表",
+      requiresAuth: true,
+      mobileFullPage: true
+    }
+  },
   {
     path:"/userInfo/:id",
     name:"PersonInfo",
