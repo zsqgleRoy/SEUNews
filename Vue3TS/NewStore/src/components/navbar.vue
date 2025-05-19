@@ -48,7 +48,6 @@ const route = useRoute();
 const toggleRef = ref<HTMLDivElement | null>(null);
 const menuRef = ref<HTMLDivElement | null>(null);
 const error = ref("");
-// 加载状态
 const isLoading = ref(true);
 const menuItems = ref([]) as any;
 
@@ -66,14 +65,12 @@ const fetchMenuItems = async () => {
 };
 
 const handleSearch = (event: CustomEvent) => {
-  const query = event.detail;
-  console.log('搜索内容:', query);
+  event.detail;
 };
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
   if (toggleRef.value || menuRef.value) {
-    // 可以添加更多逻辑
   }
 };
 

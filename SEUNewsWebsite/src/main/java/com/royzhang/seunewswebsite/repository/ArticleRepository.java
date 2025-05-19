@@ -61,7 +61,9 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     @Query("SELECT a FROM Article a WHERE a.authorId = :authorId AND a.status = :status")
     List<Article> findByAuthorIdAndStatus(Integer authorId, Article.ArticleStatus status);
 
-    @Query("SELECT a FROM Article a" +
+    @Query("SELECT a " +
+            "FROM Article a" +
+            " LEFT JOIN FETCH a.tags" +
             " WHERE" +
             " a.status = :status AND" +
             " a.title LIKE %:title%")

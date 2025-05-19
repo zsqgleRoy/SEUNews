@@ -14,13 +14,11 @@
 
     <!-- 正常显示 -->
     <template v-else>
-      <div class="glow-bar"></div>
-      
-      <el-row :gutter="20" class="options-grid">
+      <el-row :gutter="8" class="options-grid">
         <el-col
           v-for="(option, index) in vipOptions"
           :key="index"
-          :xs="30" :sm="30" :md="20" :lg="20"
+          :xs="12" :sm="8" :md="6" :lg="6"
         >
           <el-card
             shadow="hover"
@@ -28,33 +26,35 @@
             :class="{ 'selected-card': selectedOption?.value === option.value }"
             @click="selectOption(option)"
           >
-            <div class="card-header">
-              <el-tag
-                v-if="option.discount && option.discount < 1"
-                type="danger"
-                effect="dark"
-                class="discount-tag"
-              >
-                {{ (option.discount * 100).toFixed(0) }} 折
-              </el-tag>
-              
-              <div class="gem-icon">
-                <svg viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M12 0L3 7l4 10h10l4-10-9-7zm0 2.3l6.3 4.9-3 7.8H8.7l-3-7.8 6.3-4.9z"/>
-                </svg>
+            <div class="card-container">
+              <div class="icon-wrapper">
+                <el-tag
+                  v-if="option.discount && option.discount != 1"
+                  type="danger"
+                  effect="dark"
+                  class="discount-tag"
+                >
+                  {{ (option.discount * 100).toFixed(0) }}折
+                </el-tag>
+                <div class="gem-icon">
+                  <svg viewBox="0 0 20 20">
+                    <path fill="currentColor" d="M12 0L3 7l4 10h10l4-10-9-7zm0 2.3l6.3 4.9-3 7.8H8.7l-3-7.8 6.3-4.9z"/>
+                  </svg>
+                </div>
               </div>
-            </div>
 
-            <div class="card-content">
-              <h3 class="duration-text">{{ option.label }}</h3>
-              
-              <div class="price-section">
-                <span v-if="option.discount" class="original-price">
-                  ￥{{ (option.price / option.value).toFixed(1) }}
-                </span>
-                <span class="current-price">
-                  ￥{{ calculateMonthlyPrice(option) }}<small>/月</small>
-                </span>
+              <!-- 内容区 -->
+              <div class="content-wrapper">
+                <h3 class="duration-text">{{ option.label }}</h3>
+                <div class="price-wrapper">
+                  <div v-if="option.discount" class="original-price">
+                    ￥{{ (option.price / option.value).toFixed(1) }}
+                  </div>
+                  <div class="current-price">
+                    <span class="price-number">￥{{ calculateMonthlyPrice(option) }}</span>
+                    <span class="price-unit">/月</span>
+                  </div>
+                </div>
               </div>
             </div>
           </el-card>
@@ -105,8 +105,9 @@ const calculateMonthlyPrice = (option: VipDurationOption): string => {
 
 <style lang="scss" scoped>
 .duration-panel {
-  position: relative;
-  padding: 2rem 0;
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 0 1rem;
   
   .glow-bar {
     position: absolute;
@@ -138,79 +139,139 @@ const calculateMonthlyPrice = (option: VipDurationOption): string => {
   }
 }
 
+.duration-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 .options-grid {
-  margin: -10px;
+  margin: -8px;
   
   .el-col {
-    padding: 10px;
+    padding: 8px;
+    
+    @media (max-width: 768px) {
+      &:nth-child(2n+1) {
+        clear: left;
+      }
+    }
   }
 }
 
 .option-card {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  height: 100%;
+  margin: 0 auto;
+  max-width: 260px;
+  transition: transform 0.3s ease;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
   }
   
-  &.selected-card {
-    border-color: #409eff;
-    background: linear-gradient(145deg, #f8faff, #ebf5ff);
+  .card-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 12px;
   }
 }
 
-.card-header {
+.icon-wrapper {
   position: relative;
-  text-align: center;
-  padding: 1rem 0;
+  flex-shrink: 0;
   
   .discount-tag {
     position: absolute;
     top: -12px;
-    right: -12px;
-    font-weight: bold;
+    right: -8px;
     transform: rotate(15deg);
+    font-size: 0.75rem;
+    padding: 4px 8px;
   }
   
   .gem-icon {
     width: 48px;
     height: 48px;
-    margin: 0 auto;
     color: #409eff;
+    
+    @media (max-width: 480px) {
+      width: 40px;
+      height: 40px;
+    }
   }
 }
 
-.card-content {
-  text-align: center;
+.content-wrapper {
+  flex: 1;
+  min-width: 0;
   
   .duration-text {
-    font-size: 1.2rem;
+    margin: 0 0 4px;
+    font-size: 1.1rem;
     color: #303133;
-    margin: 0.5rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
-.price-section {
+.price-wrapper {
   .original-price {
-    display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #909399;
     text-decoration: line-through;
   }
   
   .current-price {
-    display: block;
-    font-size: 1.5rem;
-    color: #409eff;
-    font-weight: bold;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
     
-    small {
-      font-size: 0.8em;
+    .price-number {
+      font-size: 1.4rem;
+      color: #409eff;
+      font-weight: 600;
+    }
+    
+    .price-unit {
+      font-size: 0.9rem;
       color: #606266;
+    }
+  }
+}
+
+.selected-card {
+  border: 2px solid #409eff;
+  background: linear-gradient(145deg, #f8faff, #ebf5ff);
+  
+  .gem-icon {
+    color: darken(#409eff, 10%);
+  }
+}
+
+@media (max-width: 768px) {
+  .option-card .card-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 8px;
+  }
+  
+  .icon-wrapper {
+    margin-top: 8px;
+    
+    .gem-icon {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  
+  .content-wrapper {
+    width: 100%;
+    
+    .duration-text {
+      font-size: 1rem;
     }
   }
 }

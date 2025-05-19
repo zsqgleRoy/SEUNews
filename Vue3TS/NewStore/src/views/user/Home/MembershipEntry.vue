@@ -4,7 +4,7 @@
         <span class="crown">👑</span>
         <div class="member-info">
           <div class="title">尊贵的会员</div>
-          <div class="days">剩余 {{ days }} 天</div>
+          <div class="days">会员剩余 {{ days }} 天</div>
         </div>
         <el-icon class="arrow-icon"><ArrowRight /></el-icon>
       </div>
@@ -13,7 +13,7 @@
         <span class="sparkle">✨</span>
         <div class="upgrade-info">
           <div class="title">立即恢复特权</div>
-          <div class="action">开通会员</div>
+          <div class="days">您离开会员已 {{ Math.abs(days ?? 0) }} 天</div>
         </div>
         <el-icon class="arrow-icon"><ArrowRight /></el-icon>
       </div>
@@ -124,7 +124,6 @@ $border-radius: 16px;
   animation: twinkle 1.5s ease-in-out infinite, float 3s ease-in-out infinite;
 }
 
-// 会员信息和升级信息样式
 .member-info,
 .upgrade-info {
   flex: 1;
@@ -143,7 +142,7 @@ $border-radius: 16px;
 
 // 天数样式
 .days {
-  font-size: 14px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.9);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

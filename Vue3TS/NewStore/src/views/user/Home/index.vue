@@ -32,7 +32,6 @@
     </template>
 
     <template v-else>
-      <!-- 移动端布局 -->
       <Menu 
         v-if="showMobileMenu" 
         @menuItemClick="handleMobileMenuItemClick" />
@@ -88,17 +87,14 @@ const updateLayout = () => {
   isDesktop.value = isDesktopMode
   
   if (isDesktopMode) {
-    // 桌面端重置菜单状态
     isMenuCollapsed.value = false
     menuWidth.value = '250px'
     showMobileMenu.value = false
   } else {
-    // 移动端处理
     showMobileMenu.value = route.path === '/myHome'
   }
 }
 
-// 生命周期和事件监听
 onMounted(() => {
   window.addEventListener('resize', updateLayout)
   updateLayout()

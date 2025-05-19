@@ -34,10 +34,13 @@
     </div>
     <div class="content-wrapper">
       <div class="options-container">
-        <MembershipDurationSelect ref="durationRef" @duration-change="onDurationChange" />
+        <MembershipDurationSelect 
+          ref="durationRef"
+          @duration-change="onDurationChange"
+        />
       </div>
       <div class="payment-container">
-        <PayMenu v-if="timeLong" :data="timeLong" />
+        <PayMenu v-if="vipId" :vipId="vipId" :price="price" />
       </div>
     </div>
 
@@ -54,14 +57,29 @@
 import { onMounted, ref } from 'vue';
 import MembershipDurationSelect from './MockPayment.vue';
 import PayMenu from "./pay.vue"
-const timeLong = ref(1);
-const durationRef = ref<InstanceType<typeof MembershipDurationSelect>>();
+const vipId = ref(1);
+type DurationOption = {
+  id: number;
+  value: number;
+  price: number;
+  label: string;
+  discount?: number;
+};
+const price = ref(0)
+const selectedDuration = ref<DurationOption>();
+const durationRef = ref<{
+  selectedDuration: DurationOption | undefined;
+}>();
 
+  
 onMounted(() => {
 
 });
-const onDurationChange = ()=>{
-  timeLong.value = durationRef.value || 1;
+const onDurationChange = (newDuration: DurationOption)=>{
+  vipId.value = newDuration.id
+  const basePrice = newDuration.price / 30
+  selectedDuration.value = newDuration;
+  price.value = Number((newDuration.discount ? basePrice * newDuration.discount : basePrice).toFixed(2))
 }
 
 </script>

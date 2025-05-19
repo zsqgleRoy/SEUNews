@@ -1,5 +1,5 @@
 <template>
-    <div v-if="data" class="button-container">
+    <div v-if="vipId" class="button-container">
         <el-button 
             :loading="isLoading"
             @click="handlePay"
@@ -71,7 +71,11 @@ import { useRouter } from 'vue-router';
 import userCache, { type UserInfo } from '@/cache/userCache';
 
 const props = defineProps({
-    data: {
+    vipId: {
+        type: Number,
+        required: true
+    },
+    price:{
         type: Number,
         required: true
     }
@@ -82,40 +86,42 @@ const isLoading = ref(false);
 const errorMessage = ref('');
 
 const handlePayment = (path: string) => {
-    sessionStorage.setItem('securityMessage', String(props.data));
+    sessionStorage.setItem('securityMessage', String(props.price));
     router.push({
         path,
-        query: { amount: props.data }
+        query: { amount: props.price }
     });
 };
 
 const handlePay = async () => {
-    isLoading.value = true;
-    errorMessage.value = '';
-    try {
-        const response = await axios.post(`${initialURL.SERVER_URL}/api/pay/alipay`, { uid: userCache.getUserCache()?.user_id, amount: props.data });
-        const payFormHtml = response.data;
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(payFormHtml, 'text/html');
-        const form = doc.querySelector('form');
-
-        if (form) {
-            document.body.appendChild(form);
-            form.submit();
-            form.remove();
-        }
-    } catch (error: any) {
-        if (error.response) {
-            ElMessage.error(`请求失败，状态码: ${error.response.status}，错误信息: ${error.response.data}`);
-        } else if (error.request) {
-            ElMessage.warning('糟糕，请求已经发送，似乎没有收到响应');
-        } else {
-            ElMessage.error(`发生错误: ${error.message}`);
-        }
-    } finally {
-        isLoading.value = false;
+  try {
+    if (!userCache.getUserCache()?.user_id || !props.vipId) {
+        ElMessage.error('参数缺失，请重试');
+        return;
     }
+    const response = await axios.post(`${initialURL.SERVER_URL}/api/pay/alipay`, {
+      uid: userCache.getUserCache()?.user_id,
+      vipId: props.vipId
+    }, {
+      responseType: 'text'
+    });
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = response.data;
+    
+    const form = tempDiv.querySelector('form');
+    console.log('支付宝表单内容:', tempDiv.innerHTML); 
+    if (form) {
+      form.style.display = 'none';
+      document.body.appendChild(form);
+      setTimeout(() => {
+        form.submit();
+      }, 100);
+    }
+  } catch (error) {
+    console.error('支付请求失败:', error);
+    ElMessage.error('支付请求失败，请稍后重试');
+  }
 };
 
 const WeChatPayM = () => handlePayment('/WeChatPay');

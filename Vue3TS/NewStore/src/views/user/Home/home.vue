@@ -169,7 +169,7 @@ const handleEditProfile = () => {
 
 const userStore = useUserStore();
 // 默认头像
-const defaultAvatar = 'http://seunewsbac.pgrm.cc/static/news-images/20250313204547238_57018fd3.png';
+const defaultAvatar = `${initialURL.SERVER_URL}/static/news-images/20250313204547238_57018fd3.png`;
 // 用户信息
 const user = ref({
     name: '',

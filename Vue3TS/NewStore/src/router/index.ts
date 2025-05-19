@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
 import userRoutes from './modules/userRoutes';
 import newsRoutes from './modules/newsRouters';
+import orderRoutes from './modules/orderRoutes';
 import { ElMessage } from 'element-plus';
 import MobileMenuWrapper from "@/components/common/empty.vue"
 import userCache from "../cache/userCache";
@@ -144,10 +145,9 @@ const routes: RouteRecordRaw[] = [
     path: '/mobile-menu',
     component: MobileMenuWrapper // 空组件仅用于显示菜单
   },
-  // 引入用户相关路由
   ...userRoutes,
-  // 引入新闻相关路由
   ...newsRoutes,
+  ...orderRoutes,
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',

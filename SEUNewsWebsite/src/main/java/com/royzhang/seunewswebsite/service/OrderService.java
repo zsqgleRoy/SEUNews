@@ -4,7 +4,10 @@ import com.royzhang.seunewswebsite.entity.Order;
 import com.royzhang.seunewswebsite.entity.OrderStatus;
 import com.royzhang.seunewswebsite.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,8 +19,7 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    // 创建订单
-    public Order createOrder(String outTradeNo, BigDecimal totalAmount, String subject, String body, Integer uid) {
+    public void createOrder(String outTradeNo, BigDecimal totalAmount, String subject, String body, Integer uid, Integer vipId) {
         Order order = new Order();
         order.setOutTradeNo(outTradeNo);
         order.setTotalAmount(totalAmount);
@@ -27,11 +29,11 @@ public class OrderService {
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         order.setUid(uid);
-
-        return orderRepository.save(order);
+        order.setVipId(vipId);
+        orderRepository.save(order);
     }
 
-    // 根据商户订单号查询订单
+    @Transactional(readOnly = true)
     public Optional<Order> findByOutTradeNo(String outTradeNo) {
         return orderRepository.findByOutTradeNo(outTradeNo);
     }
@@ -44,5 +46,17 @@ public class OrderService {
             order.setUpdateTime(new Date());
             orderRepository.save(order);
         });
+    }
+
+    public Page<Order> findOrdersByUid(Integer uid, Pageable pageable) {
+        return orderRepository.findByUid(uid, pageable);
+    }
+
+    public Page<Order> findOrdersByUidAndStatus(Integer uid, OrderStatus status, Pageable pageable) {
+        return orderRepository.findByUidAndStatus(uid, status.name(), pageable);
+    }
+
+    public Page<Order> findAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 }

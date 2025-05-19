@@ -26,7 +26,7 @@
   
   const tabs: Tab[] = [
     { id: 1, label: '首页', icon: '🏠', routePath: '/' },
-    { id: 2, label: '订单', icon: '📦', routePath: '/orders' },
+    { id: 2, label: '订单', icon: '📦', routePath: '/orderView' },
     { id: 3, label: '我的', icon: '👤', routePath: '/myHome' }
   ]
   

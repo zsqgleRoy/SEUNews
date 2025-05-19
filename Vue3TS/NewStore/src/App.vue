@@ -7,7 +7,6 @@
     <navbar v-if="isShow" />
     <Menu v-else-if="!is404" @menuItemClick="handleMenuItemClick" ></Menu>
     <MainImg v-if="isMain"></MainImg>
-    <!-- 路由视图容器，在显示头部或 404 页面时显示 -->
     <div class="view" v-if="isShow || is404">
       <template v-if="isLoading">
         <LoadingComponent :loading="isLoading" />
@@ -43,7 +42,7 @@ const excludeRoutes = new Set([
   'AddNews', 'myHome', 'index',
   'VIP', 'NewsManage', 'EditNews',
   'Service','ModifyUserData', 'addUser',
-  'userManage'
+  'userManage', 'OrderView'
 ]);
 // 定义不需要显示 Footer 的路由名称
 const noFootRoutes = new Set([
@@ -84,7 +83,6 @@ const noFooter = computed(() => {
   return !noFootRoutes.has(route.name as string);
 });
 
-// 处理菜单点击事件
 const handleMenuItemClick = (routePath: string) => {
   if (!isDesktop.value) {
     router.push(routePath);

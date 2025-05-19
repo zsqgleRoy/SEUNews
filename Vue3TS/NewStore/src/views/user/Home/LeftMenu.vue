@@ -16,7 +16,6 @@
     <MembershipEntry :is-member="vip_info.isMember" :days="vip_info.days" @subscribe="handleSubscribe" class="VIPPanel"/>
     <ul>
       <li v-for="(route, index) in processedRoutes" :key="index">
-        <!-- 无子菜单项 -->
         <router-link 
           v-if="!route.children" 
           :to="route.path" 
@@ -28,7 +27,6 @@
           {{ route.name }}
         </router-link>
 
-        <!-- 有子菜单项 -->
         <div v-else @click.stop="toggleMenu(index)">
           <span :class="{ 
             'menu-item': true, 
@@ -42,12 +40,9 @@
               <el-icon v-else><ArrowDown /></el-icon>
             </div>
           </span>
-
-          <!-- 子菜单列表 -->
           <transition name="slide">
             <ul v-if="isMenuOpen[index]" class="sub-menu">
               <li v-for="(childRoute, childIndex) in route.children" :key="childIndex">
-                <!-- 内部路由 -->
                 <router-link
                   v-if="!childRoute.meta?.isExternal"
                   :to="childRoute.path"
@@ -92,6 +87,7 @@ import { useUserStore } from '@/store/userStore';
 import MembershipEntry from './MembershipEntry.vue'
 import { Paperclip, Management, ChromeFilled, List, Message, HomeFilled, Service, User, Files, Document, ArrowRight, ArrowDown, Phone, Link, Plus } from '@element-plus/icons-vue';
 import { ElMessage } from "element-plus";
+import { checkUserVipStatus, VIP_STATUS  } from "@/api/vip";
 const info = shallowRef<UserInfo | null>(userCache.getUserCache());
 const route = useRoute();
 const emits = defineEmits(['menuItemClick']);
@@ -221,7 +217,16 @@ const routes = ref(computed(() => !isAuthor.value ?
           isExternal: false,
           isPhone: false
         } 
-      }] : []),
+      },
+      {
+        path: '/orderView', name: '订单管理',
+        icon: List,
+        meta:{
+          isExternal: false,
+          isPhone: false
+        } 
+      }
+    ] : []),
   {
     path: '/contact',
     name: '联系我们',
@@ -297,19 +302,39 @@ const routes = ref(computed(() => !isAuthor.value ?
   }
 ]));
 
-const processedRoutes = computed(() => routes.value);
-
 const vip_info = ref({
   isMember: true,
   days:0
 })
 
+const getVipInfo = async () => {
+  if (typeof info.value?.user_id === 'number') {
+    const { status, remainingDays } = await checkUserVipStatus(info.value.user_id)
+    switch (status) {
+      case VIP_STATUS.NOT_SUBSCRIBED:
+        vip_info.value.isMember = false;
+        break;
+      case VIP_STATUS.EXPIRED:
+        vip_info.value.isMember = true;
+        vip_info.value.days = remainingDays;
+        break;
+      case VIP_STATUS.ACTIVE:
+        vip_info.value.isMember = true;
+        vip_info.value.days = remainingDays;
+        break;
+      case VIP_STATUS.ERROR:
+        ElMessage.error('查询 VIP 状态失败');
+        break;
+    }
+  }
+}
+
+const processedRoutes = computed(() => routes.value);
+
 function handleSubscribe() {
 }
 
-// 新增电话拨打处理方法
 const handlePhoneDial = (phoneNumber: string) => {
-  // 创建隐藏的a标签触发拨号
   const link = document.createElement('a');
   link.href = `tel:${phoneNumber}`;
   link.style.display = 'none';
@@ -365,6 +390,7 @@ const handleLogout = () => {
 };
 
 onMounted(()=>{
+  getVipInfo()
   isAuthor.value = (info.value?.isAuthor==="TRUE")
 })
 </script>

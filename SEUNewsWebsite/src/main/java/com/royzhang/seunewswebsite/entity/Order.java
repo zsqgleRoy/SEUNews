@@ -50,4 +50,7 @@ public class Order {
     // 更新时间
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Column(name = "vip_id")
+    private int vipId;
 }

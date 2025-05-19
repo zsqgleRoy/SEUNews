@@ -139,9 +139,8 @@ onMounted(() => {
     fetchNewsList(selectType.value);
 });
 
-// 点击新闻行时跳转到编辑页面
 const handleRowClick = (row: SaveData) => {
-    router.push(`/editNews/${row.article_id}`);
+    router.push(`/editNews/${row}`);
 };
 
 // 表格选择项变化时更新选中的新闻列表

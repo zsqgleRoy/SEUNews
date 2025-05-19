@@ -1,4 +1,5 @@
 export interface VipDurationOption {
+  id:number;
   label: string;
   value: number;
   price: number;

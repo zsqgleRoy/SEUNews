@@ -157,7 +157,6 @@ public class ArticleServiceImpl implements ArticleService {
             return Page.empty();
         }
         Page<Article> articles = articleRepository.findByStatusAndIsDeleted(status, isDelete, pageable);
-        // 确保触发tags加载
         articles.getContent().forEach(article -> Hibernate.initialize(article.getTags()));
         return articles.map(ArticleDTO::new);
     }

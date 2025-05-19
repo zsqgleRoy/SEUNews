@@ -11,7 +11,7 @@
  Target Server Version : 80037
  File Encoding         : 65001
 
- Date: 18/05/2025 14:29:15
+ Date: 18/05/2025 20:00:00
 */
 
 SET NAMES utf8mb4;
@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `user_vip_relations`;
 CREATE TABLE `user_vip_relations`  (
   `uid` int(0) NOT NULL COMMENT '用户ID',
   `vip_id` int(0) NOT NULL COMMENT '会员ID',
-  `activation_time` datetime(0) NULL DEFAULT NULL COMMENT '开通时间',
-  PRIMARY KEY (`uid`, `vip_id`) USING BTREE,
+  `activation_time` datetime(0) NOT NULL COMMENT '开通时间',
+  PRIMARY KEY (`uid`, `vip_id`, `activation_time`) USING BTREE,
   INDEX `fk_user_vip_relation_vip_id`(`vip_id`) USING BTREE,
   CONSTRAINT `fk_user_vip_relation_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_user_vip_relation_vip_id` FOREIGN KEY (`vip_id`) REFERENCES `vip` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT

@@ -12,8 +12,8 @@ export function useVip() {
       loading.value = true;
       const data = await vipApi.getVipOptions();
       
-      // 转换后端数据为前端需要的格式
       vipOptions.value = data.map(vip => ({
+        id: vip.id,
         label: `${vip.durations}`, 
         value: vip.durationsValue,
         price: calculateBasePrice(vip.type, vip.durationsValue),
