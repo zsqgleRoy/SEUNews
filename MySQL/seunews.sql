@@ -11,7 +11,7 @@
  Target Server Version : 80037
  File Encoding         : 65001
 
- Date: 19/05/2025 08:07:38
+ Date: 21/05/2025 22:31:21
 */
 
 SET NAMES utf8mb4;
@@ -424,9 +424,9 @@ CREATE TABLE `orders`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '订单号',
   `uid` int(0) NOT NULL COMMENT '用户ID',
   `out_trade_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '传输编号',
-  `total_amount` decimal(38, 2) NULL DEFAULT NULL COMMENT '总数',
-  `subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '提交体',
-  `body` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '响应体',
+  `total_amount` decimal(38, 2) NULL DEFAULT NULL COMMENT '总价',
+  `subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '项目介绍',
+  `body` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '响应内容',
   `payment_time` datetime(6) NULL DEFAULT NULL COMMENT '支付时间',
   `create_time` datetime(6) NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime(6) NULL DEFAULT NULL COMMENT '更新时间',
@@ -443,12 +443,9 @@ CREATE TABLE `orders`  (
 -- Records of orders
 -- ----------------------------
 INSERT INTO `orders` VALUES (1, 1, 'c45c1cdc-baf8-4a16-8528-a829ae8a1b7c', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 11:41:09.637000', '2025-03-31 11:41:09.637000', 'UNPAID', 1);
-INSERT INTO `orders` VALUES (2, 1, '67fed085-4411-4bc1-9e50-94567c8a6ae5', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 11:48:40.480000', '2025-03-31 11:48:40.480000', 'UNPAID', 1);
 INSERT INTO `orders` VALUES (3, 1, '0b936228-5def-45cd-b4d1-304c5f2f0c6b', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 12:04:07.389000', '2025-03-31 12:04:07.389000', 'UNPAID', 1);
-INSERT INTO `orders` VALUES (4, 1, 'd30759a2-c76a-4411-bcef-94f3c571b99a', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 12:21:51.415000', '2025-03-31 12:21:51.415000', 'UNPAID', 1);
 INSERT INTO `orders` VALUES (5, 1, '2dae7c49-327b-4b48-8156-b268f80d389c', 0.01, 'Test Product', 'Test Payment', '2025-03-31 12:27:26.391000', '2025-03-31 12:26:49.275000', '2025-03-31 12:27:26.391000', 'PAID', 1);
 INSERT INTO `orders` VALUES (6, 1, '3d4336c0-aac0-47bd-a2fa-536d967f60b9', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 12:30:06.279000', '2025-03-31 12:30:06.279000', 'UNPAID', 1);
-INSERT INTO `orders` VALUES (7, 1, '29685747-4e5d-4c47-a244-c4a423eeb01e', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 12:30:24.255000', '2025-03-31 12:30:24.255000', 'UNPAID', 1);
 INSERT INTO `orders` VALUES (8, 1, '5dff4422-ca59-45cd-85fe-1a5974c74cb4', 0.01, 'Test Product', 'Test Payment', '2025-03-31 12:31:20.547000', '2025-03-31 12:30:54.802000', '2025-03-31 12:31:20.547000', 'PAID', 1);
 INSERT INTO `orders` VALUES (9, 1, '934ea26c-e6ef-493e-a145-10b16c18921a', 0.01, 'Test Product', 'Test Payment', '2025-03-31 12:56:22.940000', '2025-03-31 12:55:38.362000', '2025-03-31 12:56:22.940000', 'PAID', 1);
 INSERT INTO `orders` VALUES (10, 1, '992723f2-99be-4ba4-992d-e130273b0ab5', 0.01, 'Test Product', 'Test Payment', NULL, '2025-03-31 12:56:47.683000', '2025-03-31 12:56:47.683000', 'UNPAID', 1);
@@ -631,12 +628,12 @@ INSERT INTO `users` VALUES (27, 'paidaxing', 'haimianbaobao', '1307522364@qq.com
 -- ----------------------------
 DROP TABLE IF EXISTS `vip`;
 CREATE TABLE `vip`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '会员ID',
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '价格',
   `type` enum('VIP1','VIP2','VIP3','VIP4','VIP5','VIP6','VIP7','VIP8','VIP9','VIP10','SVIP1','SVIP2','SVIP3','SVIP4','SVIP5','SVIP6','SVIP7','SVIP8','SVIP9','SVIP10','SVIP+') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'VIP1' COMMENT '会员类型',
-  `durations` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1个月',
+  `durations` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '会员时长',
   `durations_value` int(0) NULL DEFAULT NULL COMMENT '天数',
   `discount` decimal(3, 2) NULL DEFAULT NULL COMMENT '折扣',
-  `price` decimal(6, 2) NULL DEFAULT NULL,
+  `price` decimal(6, 2) NULL DEFAULT NULL COMMENT '原价',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `PK_viptype_id`(`type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
