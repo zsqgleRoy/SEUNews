@@ -44,8 +44,7 @@
   const renderContent = computed(() => {
     let content = props.message.content.replace(/<\/think>/g, '').trim()
     content = content.replace(/<think>/g, '').trim()
-    content = content.replace(/\n/g, '<br>')
-    // 3. 解析 markdown（如果需要）
+  
     if (content.includes('*') || content.includes('#')) {
       content = md.render(content)
     }

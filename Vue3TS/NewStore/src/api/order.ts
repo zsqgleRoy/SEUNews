@@ -31,5 +31,9 @@ export const orderService = {
 
   async updateStatus(outTradeNo: string, status: OrderStatus): Promise<void> {
     await axios.put(`${API_BASE_URL}/orders/${outTradeNo}/status`, { status });
+  },
+
+  async deleteByOutTradeNo(outTradeNo: string): Promise<boolean> {
+    return (await axios.delete(`${API_BASE_URL}/orders/${outTradeNo}`)).data;
   }
 };

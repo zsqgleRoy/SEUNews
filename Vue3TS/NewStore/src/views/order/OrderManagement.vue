@@ -44,7 +44,7 @@
             v-if="row.status === OrderStatus.UNPAID"
             @click="updateStatus(row.outTradeNo, OrderStatus.CANCELLED)"
           >
-            取消
+            删除
           </el-button>
         </template>
       </el-table-column>
@@ -61,8 +61,7 @@
     >
     </el-pagination>
 
-    <!-- 订单详情对话框 -->
-    <el-dialog v-model="detailVisible" title="订单详情">
+    <el-dialog v-model="detailVisible" title="订单详情" width="90%" top="5vh">
       <order-detail :order="selectedOrder" v-if="selectedOrder" />
     </el-dialog>
   </div>
@@ -86,7 +85,6 @@ const detailVisible = ref(false);
 const selectedOrder = ref<Order | null>(null);
 
 const orderStatusOptions = Object.values(OrderStatus);
-const backendPage = currentPage.value - 1
 async function loadOrders() {
   try {
     let response;
@@ -118,10 +116,11 @@ const handleCurrentChange = (newPage: number) => {
 
 async function updateStatus(outTradeNo: string, status: OrderStatus) {
   try {
-    await orderService.updateStatus(outTradeNo, status);
-    const order = orders.value.find(o => o.outTradeNo === outTradeNo);
-    if (order) order.status = status;
-    ElMessage.success('状态更新成功');
+    const response = await orderService.deleteByOutTradeNo(outTradeNo);
+    if (response){
+      ElMessage.success('状态更新成功');
+      loadOrders();
+    }
   } catch (error) {
     ElMessage.error('更新失败');
   }

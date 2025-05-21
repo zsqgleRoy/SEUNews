@@ -7,7 +7,7 @@ import com.royzhang.seunewswebsite.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +34,20 @@ public class OrderController {
                 pageResult.getNumber(),
                 pageResult.getSize()
         ));
+    }
+    @DeleteMapping("/{outTradeNo}")
+    public ResponseEntity<Boolean> deleteOrder(@PathVariable String outTradeNo) {
+        try {
+            boolean result = orderService.deleteOrderByOutTradeNo(outTradeNo);
+
+            if (result) {
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
     }
 
     /**

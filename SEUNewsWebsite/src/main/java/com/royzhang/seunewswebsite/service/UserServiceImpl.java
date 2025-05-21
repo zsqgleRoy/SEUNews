@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
             }
             user.setEmail(userDTO.getEmail());
             user.setAvatar(userDTO.getAvatar());
+            user.setIsAuthor(userDTO.getIsAuthor().toString().equals("TRUE")?User.IsAuthor.TRUE:User.IsAuthor.FALSE);
             user.setName(userDTO.getName());
             user.setPhone(userDTO.getPhone());
             user.setBirthday(userDTO.getBirthday());
