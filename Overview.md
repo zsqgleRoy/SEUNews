@@ -20,10 +20,6 @@ Sources: [README.md L1-L3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/RE
 
 SEUNews follows a standard web application architecture with clear separation between frontend, backend, and database layers.
 
-```
-
-```
-
 The architecture consists of:
 
 1. **Frontend**: A Single Page Application (SPA) built with Vue3 and TypeScript
@@ -174,9 +170,7 @@ The system handles two primary types of requests:
 1. **API Requests**: JSON-based data exchanges processed through the Spring MVC layer
 2. **Static Resource Requests**: Direct access to media files (images, videos, audio)
 
-Sources: [README.md
-
-3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
+Sources: [README.md](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
 
 ## Static Resource Management
 
@@ -192,9 +186,7 @@ This configuration enables efficient serving of media files while keeping them s
 
 For more details about static resource configuration, see [Static Resource Management](/zsqgleRoy/SEUNews/2.1-static-resource-management).
 
-Sources: [README.md
-
-3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
+Sources: [README.md](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
 
 ## Setup and Installation
 
