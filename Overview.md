@@ -109,7 +109,7 @@ Key entities include:
 * **ArticleLike/Favorite/Coin**: User interactions with articles
 * **Comment**: User comments on articles
 
-Sources: [README.md3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
+Sources: [README.md](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
 
 ## Technical Stack
 
@@ -137,9 +137,7 @@ Sources: [README.md3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.
 
 * **Version Control**: Git
 
-Sources: [README.md
-
-3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
+Sources: [README.md](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
 
 ## Request Processing Flow
 
