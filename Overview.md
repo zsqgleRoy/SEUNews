@@ -31,7 +31,7 @@ The architecture consists of:
 3. **Database**: MySQL for persistent data storage
 4. **Static Resources**: External storage for media files (images, videos, audio)
 
-Sources: [README.md3](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
+Sources: [README.md](https://github.com/zsqgleRoy/SEUNews/blob/9be5e28c/README.md#L3-L3)
 
 ## Core Domain Model
 
